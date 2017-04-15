@@ -17,5 +17,6 @@ defmodule Jirasaur.User do
     struct
     |> cast(params, [:user_id, :user_name, :team_id, :team_domain])
     |> validate_required([:user_id, :user_name, :team_id, :team_domain])
+    |> unique_constraint(:user_id)
   end
 end

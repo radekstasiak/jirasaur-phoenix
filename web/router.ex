@@ -30,9 +30,7 @@ defmodule Jirasaur.Router do
 
   scope "/api", Jirasaur.Api, as: :api do
     pipe_through [:api,:authenticated]
-
     scope "/v1", V1, as: :v1 do
-      
       post "/report", ReportController, :process_request
     end
   end
