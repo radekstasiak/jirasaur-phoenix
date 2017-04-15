@@ -32,4 +32,4 @@
   <div class="form-group">
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
-<% end %>
+<% end %> 

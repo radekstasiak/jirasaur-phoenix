@@ -1,4 +1,4 @@
-<h2>Listing users</h2>
+<!--<h2>Listing users</h2>
 
 <table class="table">
   <thead>
@@ -29,4 +29,4 @@
   </tbody>
 </table>
 
-<%= link "New user", to: user_path(@conn, :new) %>
+<%= link "New user", to: user_path(@conn, :new) %>-->
