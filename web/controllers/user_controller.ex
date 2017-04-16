@@ -18,9 +18,10 @@ defmodule Jirasaur.UserController do
 
     case Repo.insert(changeset) do
       {:ok, _user} ->
-        conn
-        |> put_flash(:info, "User created successfully.")
-        |> redirect(to: user_path(conn, :index))
+       conn
+       |> put_status(:unauthorized)
+       |> render(Jirasaur.ErrorView, "error.json", code: :unauthorized)
+       |> halt()
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
