@@ -23,14 +23,19 @@ defmodule Jirasaur.Router do
     get "/", PageController, :index
   end
 
+  scope "/", Jirasaur do
+    pipe_through [:browser,:authenticated]
+    resources "/users", UserController
+  end
+
   scope "/api", Jirasaur.Api, as: :api do
     pipe_through [:api,:authenticated]
-
     scope "/v1", V1, as: :v1 do
-      
       post "/report", ReportController, :process_request
     end
   end
+
+
 
   # Other scopes may use custom stacks.
   # scope "/api", Jirasaur do
