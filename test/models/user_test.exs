@@ -96,4 +96,5 @@ defmodule Jirasaur.UserTest do
     changeset = User.changeset(%User{}, attrs)
     assert {:error, _changeset} = Jirasaur.Repo.insert(changeset)
   end
+
 end

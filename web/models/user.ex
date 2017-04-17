@@ -16,7 +16,12 @@ defmodule Jirasaur.User do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:user_id, :user_name, :team_id, :team_domain])
+    |> downcase_value
     |> validate_required([:user_id, :user_name, :team_id, :team_domain])
     |> unique_constraint(:user_id)
+  end
+
+  def downcase_value(changeset) do
+      update_change(changeset, :user_id, &String.downcase/1)
   end
 end

@@ -11,7 +11,7 @@ defmodule Jirasaur.Api.V1.ReportController do
   end
 
   defp setup_user(conn, _params) do
-  	user_id = conn.params["user_id"]
+  	user_id = String.downcase(conn.params["user_id"])
     if(user_id != nil) do
     	user = Jirasaur.Repo.get_by(Jirasaur.User, user_id: user_id)
     	if (user == nil) do
