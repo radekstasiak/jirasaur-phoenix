@@ -9,6 +9,15 @@ defmodule Jirasaur.ReportControllerTest do
     assert json_response(conn, 200) 
   end
 
+  test "controller downcase user id and returns ok response", %{conn: conn} do
+    attrs = %{@params | user_id: "rs1"}
+    conn = post conn, api_v1_report_path(conn, :process_request), attrs
+    assert json_response(conn, 200) 
+
+    conn = post conn, api_v1_report_path(conn, :process_request), @params
+    assert json_response(conn, 200) 
+  end
+
 
   test "bad request response", %{conn: conn} do
     attrs = Map.delete(@params, :user_id)

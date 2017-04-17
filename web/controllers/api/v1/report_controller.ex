@@ -11,8 +11,9 @@ defmodule Jirasaur.Api.V1.ReportController do
   end
 
   defp setup_user(conn, _params) do
-  	user_id = String.downcase(conn.params["user_id"])
-    if(user_id != nil) do
+  	
+    if(conn.params["user_id"] != nil) do
+      user_id = String.downcase(conn.params["user_id"])
     	user = Jirasaur.Repo.get_by(Jirasaur.User, user_id: user_id)
     	if (user == nil) do
     	 changeset = User.changeset(%User{}, conn.params)
