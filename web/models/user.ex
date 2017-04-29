@@ -6,7 +6,8 @@ defmodule Jirasaur.User do
     field :user_name, :string
     field :team_id, :string
     field :team_domain, :string
-
+    has_many :user_tasks, Jirasaur.UserTask
+    many_to_many :tasks, Jirasaur.Task, join_through: Jirasaur.UserTask
     timestamps()
   end
 

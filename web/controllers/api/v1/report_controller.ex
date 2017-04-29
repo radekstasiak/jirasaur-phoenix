@@ -5,7 +5,7 @@ defmodule Jirasaur.Api.V1.ReportController do
   plug :setup_user
   
   def process_request(conn, _params) do
-  		IO.puts ("********")
+  		#IO.puts ("********")
   		user = conn.assigns[:user]
 		json conn, "#{user.user_name}"  		
   end
@@ -38,5 +38,6 @@ defmodule Jirasaur.Api.V1.ReportController do
    |> render(Jirasaur.ErrorView, "error.json", code: :bad_request)
    |> halt()
   end
+  
  #TO-DO case insesitivity, user creation
 end
