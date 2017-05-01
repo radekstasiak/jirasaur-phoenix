@@ -14,7 +14,7 @@ defmodule Jirasaur.UserTask do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:started, :finished])
-    |> validate_required([:started, :finished])
+    |> cast(params, [:started, :finished,:task_id,:user_id])
+    |> validate_required([:started, :finished,:task_id,:user_id])
   end
 end

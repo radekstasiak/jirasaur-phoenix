@@ -15,9 +15,9 @@ defmodule Jirasaur.Task do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name])
+    |> cast(params, [:name,:task_type_id,:task_status_id])
     |> downcase_value
-    |> validate_required([:name])
+    |> validate_required([:name,:task_type_id,:task_status_id])
     |> unique_constraint(:name)
   end
 
