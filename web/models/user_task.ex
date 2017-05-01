@@ -16,5 +16,7 @@ defmodule Jirasaur.UserTask do
     struct
     |> cast(params, [:started, :finished,:task_id,:user_id])
     |> validate_required([:started, :finished,:task_id,:user_id])
+    |> foreign_key_constraint(:task_id)
+    |> foreign_key_constraint(:user_id)
   end
 end

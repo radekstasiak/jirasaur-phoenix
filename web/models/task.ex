@@ -19,6 +19,8 @@ defmodule Jirasaur.Task do
     |> downcase_value
     |> validate_required([:name,:task_type_id,:task_status_id])
     |> unique_constraint(:name)
+    |> foreign_key_constraint(:task_type_id)
+    |> foreign_key_constraint(:task_status_id)
   end
 
 
