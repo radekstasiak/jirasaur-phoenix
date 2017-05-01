@@ -32,14 +32,26 @@ defmodule Jirasaur.Fixtures do
     end
   end
 
-  def fixture(:task) do
-    task_status = fixture(:task_status)
-    task_type = fixture(:task_type)
+  def fixture(type, assoc \\ [])
+  def fixture(:task, assoc) do
+    task_status = assoc[:task_status] || fixture(:task_status)
+    task_type = assoc[:task_type] || fixture(:task_type)
     attrs =  %{name: "JIRA-XXX",task_status_id: task_status.id,task_type_id: task_type.id}
     changeset = Task.changeset(%Task{}, attrs)
     case Jirasaur.Repo.insert(changeset) do
       {:ok, inserted_task} ->
           task = inserted_task
+    end
+  end
+
+  def fixture(:user_tass, assoc) do
+    task = assoc[:task] || fixture(:task)
+    user = assoc[:user] || fixture(:user)
+    attrs =  %{started: DateTime.utc_now,finished: DateTime.utc_now,task_id: task.id, user: user.id}
+    changeset = UserTask.changeset(%UserTask{}, attrs)
+    case Jirasaur.Repo.insert(changeset) do
+      {:ok, inserted_user_task} ->
+          user_task = inserted_user_task
     end
   end
 
