@@ -11,6 +11,10 @@ defmodule Jirasaur.User do
     timestamps()
   end
 
+  def preload(id) do
+    user = Jirasaur.User |> Jirasaur.Repo.get(id)|> Jirasaur.Repo.preload([:tasks]) |> Jirasaur.Repo.preload([:user_tasks])
+  end
+
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """

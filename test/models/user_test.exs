@@ -95,4 +95,26 @@ defmodule Jirasaur.UserTest do
     assert {:error, _changeset} = Jirasaur.Repo.insert(changeset)
   end
 
+  test "user should have no tasks" do
+    user = fixture(:user)
+    #task = Task |> Jirasaur.Repo.get(task.id) |> Jirasaur.Repo.preload([:users])
+    user = User.preload(user.id)
+    length = Kernel.length(user.tasks)
+    assert  length == 0
+  end
+
+  test "user should have a task" do
+    user_task = fixture(:user_task)
+    user = Jirasaur.User.preload(user_task.user_id)
+    length = Kernel.length(user.tasks)
+    assert  length == 1
+  end
+
+  test "user should have a UserTask" do
+    user_task = fixture(:user_task)
+    user = Jirasaur.User.preload(user_task.user_id)
+    length = Kernel.length(user.user_tasks)
+    assert length == 1
+  end
+
 end

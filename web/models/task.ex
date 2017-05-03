@@ -1,6 +1,6 @@
 defmodule Jirasaur.Task do
   use Jirasaur.Web, :model
-
+  import Ecto.Query
   schema "tasks" do
     field :name, :string
     belongs_to :task_type, Jirasaur.TaskType
@@ -10,12 +10,17 @@ defmodule Jirasaur.Task do
     timestamps()
   end
 
+  def preload(id) do
+    task = Jirasaur.Task |> Jirasaur.Repo.get(id) |> Jirasaur.Repo.preload([:users])|> Jirasaur.Repo.preload([:task_type]) |> Jirasaur.Repo.preload([:task_status]) |> Jirasaur.Repo.preload([:user_tasks])
+  end
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
+    #IO.puts("#{params}")
     struct
     |> cast(params, [:name,:task_type_id,:task_status_id])
+    |> put_assoc(:users, parse_users_ids(params))
     |> downcase_value
     |> validate_required([:name,:task_type_id,:task_status_id])
     |> unique_constraint(:name)
@@ -25,6 +30,17 @@ defmodule Jirasaur.Task do
 
 
   def downcase_value(changeset) do
+      
       update_change(changeset, :name, &String.downcase/1)
+  end
+
+  defp parse_users_ids(params) do
+    (params["users_ids"] || [])
+    |> Enum.map(&get_users/1)
+  end
+
+  defp get_users(id) do
+    IO.puts("---2")
+      Jirasaur.Repo.get_by(Jirasaur.User, id: id)
   end
 end

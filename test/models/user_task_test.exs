@@ -1,6 +1,5 @@
 defmodule Jirasaur.UserTaskTest do
   use Jirasaur.ModelCase
-
   alias Jirasaur.UserTask
 
   @valid_attrs %{finished: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}, started: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}, task_id: 1 ,  user_id: 1}
@@ -72,6 +71,16 @@ defmodule Jirasaur.UserTaskTest do
     attrs = Map.delete(@valid_attrs, :finished)
     changeset = UserTask.changeset(%UserTask{}, attrs)
     refute changeset.valid?
-    
   end
+
+  test "preload function for UserTask" do
+    #user_task = fixture(:user_task)
+    #user_preload = UserTask.preload(user_task.id)
+
+    #assert user_task = user_preload
+    #user_id = user_task.id
+    #user_preload_id = user_preload.id
+    #assert user_task_id = user_preload_id
+  end
+
 end

@@ -45,4 +45,28 @@ defmodule Jirasaur.TaskTest do
     changeset = Task.changeset(%Task{}, attrs)
     refute changeset.valid?
   end
+
+  test "task should have no users" do
+    task = fixture(:task)
+    #task = Task |> Jirasaur.Repo.get(task.id) |> Jirasaur.Repo.preload([:users])
+    task = Task.preload(task.id)
+    length = Kernel.length(task.users)
+    assert  length == 0
+  end
+
+  test "task should have a user" do
+    user_task = fixture(:user_task)
+    task = Jirasaur.Task.preload(user_task.task_id)
+    length = Kernel.length(task.users)
+    assert  length == 1
+  end
+
+  test "task should have a UserTask" do
+    user_task = fixture(:user_task)
+    task = Jirasaur.Task.preload(user_task.task_id)
+    length = Kernel.length(task.user_tasks)
+    assert  length == 1
+  end
+
+
 end

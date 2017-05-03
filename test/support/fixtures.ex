@@ -44,10 +44,10 @@ defmodule Jirasaur.Fixtures do
     end
   end
 
-  def fixture(:user_tass, assoc) do
+  def fixture(:user_task, assoc) do
     task = assoc[:task] || fixture(:task)
     user = assoc[:user] || fixture(:user)
-    attrs =  %{started: DateTime.utc_now,finished: DateTime.utc_now,task_id: task.id, user: user.id}
+    attrs =  %{started: DateTime.utc_now,finished: DateTime.utc_now,task_id: task.id, user_id: user.id}
     changeset = UserTask.changeset(%UserTask{}, attrs)
     case Jirasaur.Repo.insert(changeset) do
       {:ok, inserted_user_task} ->
