@@ -1,13 +1,28 @@
 defmodule Jirasaur.Api.V1.ReportController do
 	require Logger
   use Jirasaur.Web, :controller
+  import Jirasaur.ReportHelper
+  import Jirasaur.ErrorsHelper
   alias Jirasaur.User
   plug :setup_user
+  plug :setup_task
   
   def process_request(conn, _params) do
-  		#IO.puts ("********")
   		user = conn.assigns[:user]
-		json conn, "#{user.user_name}"  		
+      task = conn.assigns[:task]
+      #cmd = conn.assigns[:cmd]
+		  #json conn, "#{user.user_name}:#{cmd}"
+      json conn, "user: #{user.user_name},
+                  task: #{task.name},
+                  task type: #{task.task_type.name}"
+  end
+
+  defp setup_task(conn, _params) do
+    if(conn.params["text"] == nil) do
+      show_bad_req(conn)
+    else
+      Jirasaur.ReportHelper.process_cmd(conn, _params)
+    end
   end
 
   defp setup_user(conn, _params) do
@@ -32,12 +47,7 @@ defmodule Jirasaur.Api.V1.ReportController do
     end
   end
 
-  def show_bad_req(conn) do
-   conn
-   |> put_status(:bad_request)
-   |> render(Jirasaur.ErrorView, "error.json", code: :bad_request)
-   |> halt()
-  end
+
   
  #TO-DO case insesitivity, user creation
 end
