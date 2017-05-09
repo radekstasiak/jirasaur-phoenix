@@ -23,6 +23,15 @@ defmodule Jirasaur.Fixtures do
        end
   end
 
+  def fixture(:task_type_support) do
+    attrs =  %{name: "support"}
+    changeset = TaskType.changeset(%TaskType{}, attrs)
+    case Jirasaur.Repo.insert(changeset) do
+      {:ok, inserted_task_type} ->
+          task_type = inserted_task_type
+       end
+  end
+
   def fixture(:task_status) do
     attrs =  %{name: "done"}
     changeset = TaskStatus.changeset(%TaskStatus{}, attrs)
