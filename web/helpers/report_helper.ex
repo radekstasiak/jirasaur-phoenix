@@ -38,7 +38,7 @@ defmodule Jirasaur.ReportHelper do
 	defp process_task(conn,assoc \\ []) do
 		task_name = String.downcase(assoc[:task_name])
 		task_started = assoc[:started] || DateTime.utc_now
-		task_finished = assoc[:finshed] || DateTime.utc_now
+		task_finished = assoc[:finshed] || ""
 		if(task_name == nil) do
 			show_bad_req(conn)
 		end
