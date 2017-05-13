@@ -103,8 +103,8 @@ defmodule Jirasaur.ReportControllerTest do
   end
 
   test "existing task type is utilized when needed", %{conn: conn} do
-    task_type_support = fixture(:task_type_support)
     text = "support" 
+    task_type_support = fixture(:task_type, task_type_name: text)
     attrs = %{@params | text: text}
 
     task_types=Repo.all(TaskType)
