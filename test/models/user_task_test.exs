@@ -60,18 +60,18 @@ defmodule Jirasaur.UserTaskTest do
   end
 
 
-  test "usertask finished should be present" do
+  test "usertask finished is not required" do
     attrs = %{@valid_attrs | finished: ""}
     changeset = UserTask.changeset(%UserTask{}, attrs)
-    refute changeset.valid?
+    assert changeset.valid?
 
     attrs = %{@valid_attrs | finished: nil}
     changeset = UserTask.changeset(%UserTask{}, attrs)
-    refute changeset.valid?
+    assert changeset.valid?
 
     attrs = Map.delete(@valid_attrs, :finished)
     changeset = UserTask.changeset(%UserTask{}, attrs)
-    refute changeset.valid?
+    assert changeset.valid?
   end
 
   test "preload function for UserTask" do

@@ -137,5 +137,30 @@ defmodule Jirasaur.ReportControllerTest do
   end
 
 
+  test "request morning as first request today" do
+
+  end
+
+  test "request morning as not first request today" do
+    
+  end
+
+  test "request off as first request today" do
+    
+  end
+
+  test "request off as not first request today" do
+    
+  end
+
+  test "new task pauses current task" do
+    
+  end
+
+  test "request creates new user task" do
+    
+  end
+
+
 
 end
