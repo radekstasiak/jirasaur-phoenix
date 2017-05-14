@@ -197,7 +197,7 @@ defmodule Jirasaur.ReportControllerTest do
     
   end
 
-  test "new task pauses current task" do
+  test "request pauses previous current task" do
     task = fixture(:task)
     text = "off"
     user_task = fixture(:user_task, task: task)

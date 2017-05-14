@@ -1,10 +1,46 @@
 defmodule Jirasaur.ReportHelper do
 	import Jirasaur.ErrorsHelper
+	import Ecto.Query, only: [from: 2]
+	use Timex
 	alias Jirasaur.Task
 	alias Jirasaur.TaskStatus
 	alias Jirasaur.TaskType
+	alias Jirasaur.UserTask
+	alias Jirasaur.Repo
+	
 	def send(conn) do
 		conn
+	end
+
+	def process_user_task(conn, _opts) do 
+		user = conn.assigns[:user]
+		task = conn.assigns[:task]
+		task_status = TaskStatus.preload(task.task_status_id)
+		current_user_task = get_current_task(user.id)
+		# cond do
+		# 	task_status.name == "morning" ->
+
+		# 	task_status.name == "off" ->
+
+		# 	true ->
+
+
+		# end
+		send(conn)
+	end
+
+	def get_current_task(user_id) do
+		date = DateTime.utc_now
+		query = Ecto.Query.from(t in UserTask,
+		 where: t.started >= ^Timex.beginning_of_day(date),
+		 where: t.user_id == ^user_id,
+  		 order_by: [desc: t.started],
+  		 limit: 1)
+		#separate report helper test
+		# from t in UserTask, where: t.started >= Timex.beginning_of_day(date),
+  # 		 order_by: [desc: t.started],
+  # 		 limit: 1)
+		most_recent = Repo.one(query)
 	end
 
 	def process_cmd(conn, _opts) do

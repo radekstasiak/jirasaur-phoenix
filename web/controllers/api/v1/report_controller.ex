@@ -5,6 +5,7 @@ defmodule Jirasaur.Api.V1.ReportController do
   alias Jirasaur.User
   plug :setup_user
   plug :setup_task
+  plug :setup_user_task
   
   def process_request(conn, _params) do
   		user = conn.assigns[:user]
@@ -14,6 +15,10 @@ defmodule Jirasaur.Api.V1.ReportController do
       json conn, "user: #{user.user_name},
                   task: #{task.name},
                   task type: #{task.task_type.name}"
+  end
+
+  defp setup_user_task(conn,params) do
+    Jirasaur.ReportHelper.process_user_task(conn,params)  
   end
 
   defp setup_task(conn, params) do

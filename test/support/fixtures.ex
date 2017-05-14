@@ -55,7 +55,7 @@ defmodule Jirasaur.Fixtures do
   end
 
     def fixture(:task_status, assoc) do
-    name = assoc[:task_type_name] || "done"
+    name = assoc[:task_status_name] || "done"
     attrs =  %{name: name}
     changeset = TaskStatus.changeset(%TaskStatus{}, attrs)
     case Jirasaur.Repo.insert(changeset) do
