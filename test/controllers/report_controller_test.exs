@@ -19,7 +19,8 @@ defmodule Jirasaur.ReportControllerTest do
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     assert json_response(conn, 200) 
 
-    conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), @params
+    attrs = %{attrs | text: "JIRA-123"}
+    conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     assert json_response(conn, 200) 
   end
 
@@ -152,15 +153,23 @@ defmodule Jirasaur.ReportControllerTest do
     length_after_req = Kernel.length(user_tasks)
 
     assert length_after_req == length_before_req + 1
-    user_task = conn.assigns[:task]
-    assert user_task!=nil
+    user_task = conn.assigns[:user_task]
+    assert user_task != nil
 
-    task_id = user_task.task_id
-    task = Task.preload(task_id)
-    assert task.name == text
+    task = conn.assigns[:task]
+    assert task.id == user_task.task_id
+    user_task = UserTask.preload(user_task.id)
+    assert user_task.task.name == text
   end
 
   test "request morning as not first request today" do
+    user = fixture(:user, 
+                   token: "aaa",
+                   team_domain: "XY1",
+                   team_id: "radev",
+                   user_id: "RS1",
+                   user_name: "Radek")
+    user_task = fixture(:user_task, user: user)
     text = "morning"
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
@@ -179,7 +188,14 @@ defmodule Jirasaur.ReportControllerTest do
   end
 
   test "request off as not first request today" do
-    task = fixture(:task)
+    user = fixture(:user, 
+                   token: "aaa",
+                   team_domain: "XY1",
+                   team_id: "radev",
+                   user_id: "RS1",
+                   user_name: "Radek")
+    user_task = fixture(:user_task, user: user)
+
     text = "off"
     
     user_tasks = Repo.all(UserTask)
@@ -192,20 +208,28 @@ defmodule Jirasaur.ReportControllerTest do
     user_task = conn.assigns[:user_task]
 
     assert length_before_req == length_after_req
-    assert user_task != nil
-    assert json_response(conn, 200) =~ "you have no reports today"
+    assert user_task == nil
+    assert json_response(conn, 200)
     
   end
 
-  test "request pauses previous current task" do
+  test "request updates previous task" do
     task = fixture(:task)
     text = "off"
-    user_task = fixture(:user_task, task: task)
+
+    user = fixture(:user, 
+                   token: "aaa",
+                   team_domain: "XY1",
+                   team_id: "radev",
+                   user_id: "RS1",
+                   user_name: "Radek")
+    user_task = fixture(:user_task, task: task, user: user)
     assert user_task.finished == nil
     
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     user_task = Jirasaur.UserTask.preload(user_task.id)
+    assert json_response(conn, 200)
     assert user_task.finished != ""
     assert user_task.finished != nil
   end
@@ -226,7 +250,7 @@ defmodule Jirasaur.ReportControllerTest do
 
     assert length_after_req == length_before_req + 1
     assert user_task != nil
-    assert json_response(conn, 200) =~ "you have no reports today"
+    assert json_response(conn, 200)
   end
 
 

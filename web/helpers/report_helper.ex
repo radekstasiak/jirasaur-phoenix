@@ -16,7 +16,7 @@ defmodule Jirasaur.ReportHelper do
 		user = conn.assigns[:user]
 		task = conn.assigns[:task]
 		task_status = TaskStatus.preload(task.task_status_id)
-		current_user_task = get_current_task(user.id)
+		#current_user_task = get_current_task(user.id)
 		# cond do
 		# 	task_status.name == "morning" ->
 
@@ -27,20 +27,6 @@ defmodule Jirasaur.ReportHelper do
 
 		# end
 		send(conn)
-	end
-
-	def get_current_task(user_id) do
-		date = DateTime.utc_now
-		query = Ecto.Query.from(t in UserTask,
-		 where: t.started >= ^Timex.beginning_of_day(date),
-		 where: t.user_id == ^user_id,
-  		 order_by: [desc: t.started],
-  		 limit: 1)
-		#separate report helper test
-		# from t in UserTask, where: t.started >= Timex.beginning_of_day(date),
-  # 		 order_by: [desc: t.started],
-  # 		 limit: 1)
-		most_recent = Repo.one(query)
 	end
 
 	def process_cmd(conn, _opts) do
@@ -72,17 +58,78 @@ defmodule Jirasaur.ReportHelper do
 	end
 
 	defp process_task(conn,assoc \\ []) do
+		user = conn.assigns[:user]
 		task_name = String.downcase(assoc[:task_name])
 		task_started = assoc[:started] || DateTime.utc_now
 		task_finished = assoc[:finshed] || ""
 		if(task_name == nil) do
 			show_bad_req(conn)
 		end
-		task = Jirasaur.Repo.get_by(Task, name: task_name) ||
-				get_task(conn,task_name)
+		task = get_task(conn,task_name)
 		task = Task.preload(task.id)
 		conn = Plug.Conn.assign(conn, :task, task)
-		send(conn)
+
+		most_recent = get_current_user_task(user.id)
+		cond do
+			task.name == "off" and most_recent == nil  ->
+				show_bad_req(conn, msg: "you have no reports today")
+			task.name == "morning" and most_recent != nil ->
+				show_bad_req(conn, msg: "already signed in")
+			true ->
+				if(most_recent != nil) do
+					update_current_task(conn,most_recent)	
+				end
+
+				if(task.name != "off") do 
+					new_user_task = insert_user_task(conn, task.id, user.id, task_started, task_finished)
+				end
+				
+				conn = Plug.Conn.assign(conn, :user_task, new_user_task)
+				send(conn)
+
+		end
+
+	end
+
+	defp update_current_task(conn,user_task) do
+		params = %{task_id: user_task.task_id, 
+				   user_id: user_task.user_id,
+				   started: user_task.started,
+				   finished: Timex.local}
+		changeset = UserTask.changeset(user_task, params)
+
+  		case Repo.update(changeset) do
+  		 {:ok, inserted_user_task} ->
+			inserted_user_task	
+    	 {:error, changeset} ->
+      		show_bad_req(conn)
+  end
+		
+	end
+
+	defp insert_user_task(conn, task_id, user_id,started, finished) do
+		changeset = UserTask.changeset(%UserTask{},%{task_id: task_id,
+					user_id: user_id,
+					started: started,
+					finished: finished,
+					})
+		case Jirasaur.Repo.insert(changeset) do
+			{:ok, inserted_task} ->
+				inserted_task
+			{:error, _inserted_task_type} ->
+				show_bad_req(conn)
+		end
+	end
+
+
+	def get_current_user_task(user_id) do
+		date = DateTime.utc_now
+		query = Ecto.Query.from(t in UserTask,
+		 where: t.started >= ^Timex.beginning_of_day(date),
+		 where: t.user_id == ^user_id,
+  		 order_by: [desc: t.started],
+  		 limit: 1)
+		most_recent = Repo.one(query)
 	end
 
 	defp get_task(conn,task_name) do
@@ -91,7 +138,9 @@ defmodule Jirasaur.ReportHelper do
 	end
 
 	defp insert_task(conn, task_name) do
-		task_type = get_task_type(conn,task_name)
+		task_type_name = get_task_type(task_name)
+		task_type = Jirasaur.Repo.get_by(TaskType, name: task_type_name) || 
+					insert_new_task_type(conn,task_type_name)
 		task_status = get_task_status(conn)
 		changeset = Task.changeset(%Task{},%{name: task_name,
 					task_type_id: task_type.id,
@@ -103,10 +152,9 @@ defmodule Jirasaur.ReportHelper do
 			{:error, _inserted_task_type} ->
 				show_bad_req(conn)
 		end
-
-
 	end
-	defp get_task_type(conn,task_name) do 
+
+	defp get_task_type(task_name) do 
 		task_type_name = cond do
 			task_name == "private" ->
 			 "private" 
@@ -121,8 +169,6 @@ defmodule Jirasaur.ReportHelper do
 			true ->
 			  "support"
 		end
-		Jirasaur.Repo.get_by(TaskType, name: task_type_name) || 
-					insert_new_task_type(conn,task_type_name)
 	end
 
 	defp insert_new_task_type(conn,task_type_name) do
