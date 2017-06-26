@@ -253,5 +253,18 @@ defmodule Jirasaur.ReportControllerTest do
     assert json_response(conn, 200)
   end
 
+  test "request task with explicit start time" do
+  #off only one date
+  #make sure new task star = started
+  #make sure current task finish = new.started
+  end
+
+  test "request task with explicit start and finish time" do
+  #off only one date
+  #make sure new task star = started, finish = finished
+  #make sure current task finish = new.started
+  end
+
+
 
 end

@@ -12,23 +12,6 @@ defmodule Jirasaur.ReportHelper do
 		conn
 	end
 
-	def process_user_task(conn, _opts) do 
-		user = conn.assigns[:user]
-		task = conn.assigns[:task]
-		task_status = TaskStatus.preload(task.task_status_id)
-		#current_user_task = get_current_task(user.id)
-		# cond do
-		# 	task_status.name == "morning" ->
-
-		# 	task_status.name == "off" ->
-
-		# 	true ->
-
-
-		# end
-		send(conn)
-	end
-
 	def process_cmd(conn, _opts) do
 		cmd = String.split(conn.params["text"])
 		cmd_length = Kernel.length(cmd)
@@ -62,6 +45,7 @@ defmodule Jirasaur.ReportHelper do
 		task_name = String.downcase(assoc[:task_name])
 		task_started = assoc[:started] || DateTime.utc_now
 		task_finished = assoc[:finshed] || ""
+		current_task_finished = assoc[:started] || Timex.local
 		if(task_name == nil) do
 			show_bad_req(conn)
 		end
@@ -77,25 +61,22 @@ defmodule Jirasaur.ReportHelper do
 				show_bad_req(conn, msg: "already signed in")
 			true ->
 				if(most_recent != nil) do
-					update_current_task(conn,most_recent)	
+					update_current_task(conn,most_recent, current_task_finished)	
 				end
 
 				if(task.name != "off") do 
 					new_user_task = insert_user_task(conn, task.id, user.id, task_started, task_finished)
+					conn = Plug.Conn.assign(conn, :user_task, new_user_task)
 				end
-				
-				conn = Plug.Conn.assign(conn, :user_task, new_user_task)
 				send(conn)
-
 		end
-
 	end
 
-	defp update_current_task(conn,user_task) do
+	defp update_current_task(conn,user_task, finished) do
 		params = %{task_id: user_task.task_id, 
 				   user_id: user_task.user_id,
 				   started: user_task.started,
-				   finished: Timex.local}
+				   finished: finished}
 		changeset = UserTask.changeset(user_task, params)
 
   		case Repo.update(changeset) do
