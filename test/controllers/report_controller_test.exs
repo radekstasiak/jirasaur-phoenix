@@ -215,7 +215,7 @@ defmodule Jirasaur.ReportControllerTest do
 
   test "request updates previous task" do
     task = fixture(:task)
-    text = "off"
+    text = "JIRA-512"
 
     user = fixture(:user, 
                    token: "aaa",
@@ -229,8 +229,11 @@ defmodule Jirasaur.ReportControllerTest do
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     user_task = Jirasaur.UserTask.preload(user_task.id)
+    new_user_task = conn.assigns[:user_task]
     assert json_response(conn, 200)
     assert user_task.finished != ""
+
+    assert Timex.format!(user_task.finished,"%FT%T%:z", :strftime) == Timex.format!(user_task.started,"%FT%T%:z", :strftime)
     assert user_task.finished != nil
   end
 
@@ -254,6 +257,18 @@ defmodule Jirasaur.ReportControllerTest do
   end
 
   test "request task with explicit start time" do
+
+  task = fixture(:task, task_name: "JIRA-531")
+ # text = task.name<> " 14:51"
+  text = task.name
+  attrs = %{@params | text: text}
+
+  conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+  user_task = conn.assigns[:user_task]
+  assert user_task != nil
+  assert json_response(conn, 200)
+
+  assert user_task.started == "dupa"
   #off only one date
   #make sure new task star = started
   #make sure current task finish = new.started
@@ -263,8 +278,9 @@ defmodule Jirasaur.ReportControllerTest do
   #off only one date
   #make sure new task star = started, finish = finished
   #make sure current task finish = new.started
-  end
 
+  end
+   #also test to check if current task is updated correctly
 
 
 end

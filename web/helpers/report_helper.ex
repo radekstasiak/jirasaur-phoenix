@@ -43,9 +43,9 @@ defmodule Jirasaur.ReportHelper do
 	defp process_task(conn,assoc \\ []) do
 		user = conn.assigns[:user]
 		task_name = String.downcase(assoc[:task_name])
-		task_started = assoc[:started] || DateTime.utc_now
+		task_started = assoc[:started] || Timex.now
 		task_finished = assoc[:finshed] || ""
-		current_task_finished = assoc[:started] || Timex.local
+		current_task_finished = assoc[:started] || Timex.now
 		if(task_name == nil) do
 			show_bad_req(conn)
 		end
@@ -104,7 +104,7 @@ defmodule Jirasaur.ReportHelper do
 
 
 	def get_current_user_task(user_id) do
-		date = DateTime.utc_now
+		date = Timex.now
 		query = Ecto.Query.from(t in UserTask,
 		 where: t.started >= ^Timex.beginning_of_day(date),
 		 where: t.user_id == ^user_id,
