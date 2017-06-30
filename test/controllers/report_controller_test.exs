@@ -257,10 +257,10 @@ defmodule Jirasaur.ReportControllerTest do
   end
 
   test "request task with explicit start time" do
-
+  time = "14:51"
   task = fixture(:task, task_name: "JIRA-531")
- # text = task.name<> " 14:51"
-  text = task.name
+  text = task.name<> " #{time}"
+  #text = task.name
   attrs = %{@params | text: text}
 
   conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
@@ -268,7 +268,13 @@ defmodule Jirasaur.ReportControllerTest do
   assert user_task != nil
   assert json_response(conn, 200)
 
-  assert user_task.started == "dupa"
+  [hour, minute] = String.split time, ":"
+  hourInteger = Integer.parse(hour)
+  minuteInteger = Integer.parse(minute)
+  today = Timex.now
+  dateTime = %DateTime{year: today.year, month: today.month, day: today.day, hour: elem(hourInteger,0), minute: elem(minuteInteger,0), second: 0, zone_abbr: "UTC", time_zone: "Europe/London", utc_offset: 0, std_offset: 0}
+
+  assert user_task.started == dateTime
   #off only one date
   #make sure new task star = started
   #make sure current task finish = new.started

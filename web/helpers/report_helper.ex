@@ -43,9 +43,24 @@ defmodule Jirasaur.ReportHelper do
 	defp process_task(conn,assoc \\ []) do
 		user = conn.assigns[:user]
 		task_name = String.downcase(assoc[:task_name])
-		task_started = assoc[:started] || Timex.now
-		task_finished = assoc[:finshed] || ""
-		current_task_finished = assoc[:started] || Timex.now
+		if(assoc[:started] != nil) do
+		   task_started = convertTimeToDateTime(assoc[:started])
+		   current_task_finished = convertTimeToDateTime(assoc[:started])
+		end
+
+		if(task_started == nil) do
+		  task_started = Timex.now
+		  current_task_finished = Timex.now
+		end
+
+		if(assoc[:finshed] != nil) do
+		   task_finished = convertTimeToDateTime(assoc[:finshed])
+		end
+
+		if(task_finished == nil) do
+		  task_finished = ""
+		end
+		
 		if(task_name == nil) do
 			show_bad_req(conn)
 		end
@@ -70,6 +85,15 @@ defmodule Jirasaur.ReportHelper do
 				end
 				send(conn)
 		end
+	end
+
+	defp convertTimeToDateTime(time) do
+		[hour, minute] = String.split time, ":"
+		hourInteger = Integer.parse(hour)
+		minuteInteger = Integer.parse(minute)
+		today = Timex.now
+		dateTime = %DateTime{year: today.year, month: today.month, day: today.day, hour: elem(hourInteger,0), minute: elem(minuteInteger,0), second: 0, zone_abbr: "UTC", time_zone: "Europe/London", utc_offset: 0, std_offset: 0}
+
 	end
 
 	defp update_current_task(conn,user_task, finished) do
