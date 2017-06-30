@@ -2,8 +2,8 @@ defmodule Jirasaur.UserTask do
   use Jirasaur.Web, :model
 
   schema "usertasks" do
-    field :started, Ecto.DateTime
-    field :finished, Ecto.DateTime
+    field :started, Timex.Ecto.DateTime
+    field :finished, Timex.Ecto.DateTime
     belongs_to :task, Jirasaur.Task
     belongs_to :user, Jirasaur.User
     timestamps()

@@ -39,7 +39,9 @@ defmodule Jirasaur.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
-     {:timex, "~> 3.0.4"}]
+     {:timex, "~> 3.0.4"},
+     {:timex_ecto, "~>3.1.1"}]
+
 
   end
 
