@@ -37,6 +37,13 @@ defmodule Jirasaur.ReportControllerTest do
     assert json_response(conn,401) =~ "unauthorized"
   end
 
+  test "task missing name", %{conn: conn} do
+    text = nil  
+    attrs = %{@params | text: text}
+    conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+    assert json_response(conn, 400) =~ "bad_request"
+
+  end
   test "request creates new task", %{conn: conn} do
     text = "JI2-123" 
     attrs = %{@params | text: text}

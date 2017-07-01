@@ -16,7 +16,6 @@ defmodule Jirasaur.ReportHelper do
 		cmd = String.split(conn.params["text"])
 		cmd_length = Kernel.length(cmd)
 
-
 		cond do
 			cmd_length == 1 ->
 		 	 process_task(
@@ -61,9 +60,6 @@ defmodule Jirasaur.ReportHelper do
 		  task_finished = ""
 		end
 		
-		if(task_name == nil) do
-			show_bad_req(conn)
-		end
 		task = get_task(conn,task_name)
 		task = Task.preload(task.id)
 		conn = Plug.Conn.assign(conn, :task, task)

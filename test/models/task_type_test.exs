@@ -41,4 +41,11 @@ defmodule Jirasaur.TaskTypeTest do
     changeset = TaskType.changeset(%TaskType{}, attrs)
     assert {:error, _inserted_task_type} = Jirasaur.Repo.insert(changeset)
   end
+
+  test "task type preload function" do
+    task_type = fixture(:task_type)
+    task_type_preload = TaskType.preload(task_type.id)
+
+    assert task_type.id == task_type_preload.id
+  end
 end
