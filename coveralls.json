@@ -1,0 +1,11 @@
+{
+  "skip_files": [
+    "lib",
+    "test",
+    "web/views",
+    "web/web.ex",
+    "web/router.ex",
+    "web/gettext.ex",
+    "web/channels"
+  ]
+}
