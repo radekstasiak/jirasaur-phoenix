@@ -1,4 +1,4 @@
-# Jirasaur [![Build Status](https://travis-ci.org/radekstasiak/jirasaur-phoenix.svg?branch=master)](https://travis-ci.org/radekstasiak/jirasaur-phoenix) <a href="https://codecov.io/gh/radekstasiak/jirasaur-phoenix"> <img src="https://codecov.io/gh/radekstasiak/jirasaur-phoenix/branch/develop/graph/badge.svg" alt="Codecov" />
+# Jirasaur [![Build Status](https://travis-ci.org/radekstasiak/jirasaur-phoenix.svg?branch=develop)](https://travis-ci.org/radekstasiak/jirasaur-phoenix) <a href="https://codecov.io/gh/radekstasiak/jirasaur-phoenix"> <img src="https://codecov.io/gh/radekstasiak/jirasaur-phoenix/branch/develop/graph/badge.svg" alt="Codecov" />
 </a>
 
 It's a timetracking app intended to work along with Slack slash commands
