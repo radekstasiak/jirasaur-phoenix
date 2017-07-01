@@ -260,7 +260,6 @@ defmodule Jirasaur.ReportControllerTest do
   time = "14:51"
   task = fixture(:task, task_name: "JIRA-531")
   text = task.name<> " #{time}"
-  #text = task.name
   attrs = %{@params | text: text}
 
   conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
@@ -275,18 +274,39 @@ defmodule Jirasaur.ReportControllerTest do
   dateTime = %DateTime{year: today.year, month: today.month, day: today.day, hour: elem(hourInteger,0), minute: elem(minuteInteger,0), second: 0, zone_abbr: "UTC", time_zone: "Europe/London", utc_offset: 0, std_offset: 0}
 
   assert user_task.started == dateTime
-  #off only one date
-  #make sure new task star = started
-  #make sure current task finish = new.started
+
   end
 
   test "request task with explicit start and finish time" do
-  #off only one date
-  #make sure new task star = started, finish = finished
-  #make sure current task finish = new.started
+  timeStart = "14:51"
+  timeEnd = "16:14"
 
+  task = fixture(:task, task_name: "JIRA-534")
+  text = task.name<> " #{timeStart}"<> " #{timeEnd}"
+  
+  attrs = %{@params | text: text}
+
+  conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+  user_task = conn.assigns[:user_task]
+  assert user_task != nil
+  assert json_response(conn, 200)
+
+  [hour, minute] = String.split timeStart, ":"
+  hourInteger = Integer.parse(hour)
+  minuteInteger = Integer.parse(minute)
+  today = Timex.now
+  dateStart = %DateTime{year: today.year, month: today.month, day: today.day, hour: elem(hourInteger,0), minute: elem(minuteInteger,0), second: 0, zone_abbr: "UTC", time_zone: "Europe/London", utc_offset: 0, std_offset: 0}
+
+  assert user_task.started == dateStart
+
+  [hour, minute] = String.split timeEnd, ":"
+  hourInteger = Integer.parse(hour)
+  minuteInteger = Integer.parse(minute)
+  today = Timex.now
+  dateFinish = %DateTime{year: today.year, month: today.month, day: today.day, hour: elem(hourInteger,0), minute: elem(minuteInteger,0), second: 0, zone_abbr: "UTC", time_zone: "Europe/London", utc_offset: 0, std_offset: 0}
+  assert user_task.finished == dateFinish
   end
-   #also test to check if current task is updated correctly
+   
 
 
 end

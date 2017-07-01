@@ -16,6 +16,7 @@ defmodule Jirasaur.ReportHelper do
 		cmd = String.split(conn.params["text"])
 		cmd_length = Kernel.length(cmd)
 
+
 		cond do
 			cmd_length == 1 ->
 		 	 process_task(
@@ -52,9 +53,8 @@ defmodule Jirasaur.ReportHelper do
 		  task_started = Timex.now
 		  current_task_finished = Timex.now
 		end
-
-		if(assoc[:finshed] != nil) do
-		   task_finished = convertTimeToDateTime(assoc[:finshed])
+		if(assoc[:finished] != nil) do
+		   task_finished = convertTimeToDateTime(assoc[:finished])
 		end
 
 		if(task_finished == nil) do
