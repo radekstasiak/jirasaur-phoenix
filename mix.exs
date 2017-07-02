@@ -4,7 +4,7 @@ defmodule Jirasaur.Mixfile do
   def project do
     [app: :jirasaur,
      version: "0.0.1",
-     elixir: "~> 1.2",
+     elixir: "~> 1.4.2",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -12,7 +12,8 @@ defmodule Jirasaur.Mixfile do
      aliases: aliases(),
      deps: deps(),
      test_coverage: [tool: ExCoveralls],
-     preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test, "coveralls.json": :test]]
+     preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test, "coveralls.json": :test],
+	]
   end
 
   # Configuration for the OTP application.
@@ -43,7 +44,8 @@ defmodule Jirasaur.Mixfile do
      {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
      {:timex, "~> 3.0.4"},
      {:timex_ecto, "~>3.1.1"},
-     {:excoveralls, "~> 0.6", only: :test}]
+     {:excoveralls, "~> 0.6", only: :test},
+     {:poison, "~> 2.0"}]
 
 
   end
