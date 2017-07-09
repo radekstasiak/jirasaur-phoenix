@@ -1,6 +1,7 @@
 defmodule Jirasaur.Plug.Authenticate do
   @behaviour Plug
   import Plug.Conn
+  import Jirasaur.ErrorsHelper
   import Phoenix.Controller, only: [render: 4]
 
   def init(opts), do: opts
@@ -8,10 +9,7 @@ defmodule Jirasaur.Plug.Authenticate do
   def call(conn, _opts) do
     slack_token = System.get_env("SLACK_TOKEN")
     if (slack_token ==nil || slack_token != conn.params["token"]) do  
-      conn
-      |> put_status(:unauthorized)
-      |> render(Jirasaur.ErrorView, "error.json", code: :unauthorized)
-      |> halt()
+      show_unauthorized(conn)
     else
       conn
     end

@@ -11,37 +11,43 @@ defmodule Jirasaur.ReportControllerTest do
 
   test "ok response", %{conn: conn} do
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), @params
-    assert json_response(conn, 200) 
+    assert json_response(conn, 201) 
   end
 
   test "controller downcase user id and returns ok response", %{conn: conn} do
     attrs = %{@params | user_id: "rs1"}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
-    assert json_response(conn, 200) 
+    assert json_response(conn, 201) 
 
     attrs = %{attrs | text: "JIRA-123"}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
-    assert json_response(conn, 200) 
+    assert json_response(conn, 201) 
   end
 
 
   test "bad request response", %{conn: conn} do
     attrs = Map.delete(@params, :user_id)
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
-    assert json_response(conn, 400) =~ "bad_request"
+    assert json_response(conn, 400) == %{
+      "code"=>"bad_request"
+    }
   end
 
   test "unauthorized response", %{conn: conn} do
     attrs = %{@params | token: "bbb"}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
-    assert json_response(conn,401) =~ "unauthorized"
+    assert json_response(conn,401) == %{
+      "code" => "unauthorized"
+    } 
   end
 
   test "task missing name", %{conn: conn} do
     text = nil  
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
-    assert json_response(conn, 400) =~ "bad_request"
+    assert json_response(conn, 400) == %{
+      "code"=>"bad_request"
+    }
 
   end
   test "request creates new task", %{conn: conn} do
@@ -58,7 +64,7 @@ defmodule Jirasaur.ReportControllerTest do
     assert length_after_req == length_before_req + 1
     assert task != nil
     assert task.name == String.downcase(text)
-    assert json_response(conn, 200)
+    assert json_response(conn, 201)
   end
 
   test "support task is correctly recognized",  %{conn: conn} do
@@ -66,7 +72,7 @@ defmodule Jirasaur.ReportControllerTest do
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     task = conn.assigns[:task]
-    assert json_response(conn, 200)
+    assert json_response(conn, 201)
     assert task.task_type.name == "support"
   end
 
@@ -75,7 +81,7 @@ defmodule Jirasaur.ReportControllerTest do
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     task = conn.assigns[:task]
-    assert json_response(conn, 200)
+    assert json_response(conn, 201)
     assert task.task_type.name == "task"
   end
 
@@ -84,7 +90,7 @@ defmodule Jirasaur.ReportControllerTest do
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     task = conn.assigns[:task]
-    assert json_response(conn, 200)
+    assert json_response(conn, 201)
     assert task.task_type.name == "private"
   end
 
@@ -93,7 +99,7 @@ defmodule Jirasaur.ReportControllerTest do
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     task = conn.assigns[:task]
-    assert json_response(conn, 200)
+    assert json_response(conn, 201)
     assert task.task_type.name == "meeting"
   end
 
@@ -108,7 +114,7 @@ defmodule Jirasaur.ReportControllerTest do
     tasks = Repo.all(Task)
     length_after_req = Kernel.length(tasks)
     assert length_after_req == length_before_req
-    assert json_response(conn, 200)
+    assert json_response(conn, 201)
   end
 
   test "existing task type is utilized when needed", %{conn: conn} do
@@ -122,7 +128,7 @@ defmodule Jirasaur.ReportControllerTest do
     task_types=Repo.all(TaskType)
     task = conn.assigns[:task]
     length_after_req = Kernel.length(task_types)
-    assert json_response(conn, 200)
+    assert json_response(conn, 201)
     assert length_after_req == length_before_req
     assert task.task_type.name == task_type_support.name
 
@@ -132,7 +138,7 @@ defmodule Jirasaur.ReportControllerTest do
     text = "JIRA2412a4" 
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
-    assert json_response(conn, 200)
+    assert json_response(conn, 201)
     task = conn.assigns[:task]
     task = Task.preload(task.id)
     assert task.task_type.name == "support"
@@ -142,7 +148,9 @@ defmodule Jirasaur.ReportControllerTest do
     text ="param1 param2 param3 param4"
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs    
-    assert json_response(conn, 400) =~ "bad_request"
+    assert json_response(conn, 400)  == %{
+      "code"=>"bad_request"
+    }
   end
 
 
@@ -154,7 +162,7 @@ defmodule Jirasaur.ReportControllerTest do
     length_before_req = Kernel.length(user_tasks)
 
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
-    assert json_response(conn, 200)
+    assert json_response(conn, 201)
 
     user_tasks = Repo.all(UserTask)
     length_after_req = Kernel.length(user_tasks)
@@ -182,7 +190,9 @@ defmodule Jirasaur.ReportControllerTest do
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     user_task = conn.assigns[:user_task]
     assert user_task==nil
-    assert json_response(conn, 400) =~ "already signed in"
+    assert json_response(conn, 400)  == %{
+      "code"=>"already signed in"
+    }
   end
 
   test "request off as first request today" do
@@ -191,7 +201,10 @@ defmodule Jirasaur.ReportControllerTest do
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     user_task = conn.assigns[:user_task]
     assert user_task==nil
-    assert json_response(conn, 400) =~ "you have no reports today"
+    assert json_response(conn, 400) == %{
+      "code"=>"you have no reports today"
+    }
+
   end
 
   test "request off as not first request today" do
@@ -237,7 +250,7 @@ defmodule Jirasaur.ReportControllerTest do
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     user_task = Jirasaur.UserTask.preload(user_task.id)
     new_user_task = conn.assigns[:user_task]
-    assert json_response(conn, 200)
+    assert json_response(conn, 201)
     assert user_task.finished != ""
 
     assert Timex.format!(user_task.finished,"%FT%T%:z", :strftime) == Timex.format!(user_task.started,"%FT%T%:z", :strftime)
@@ -260,7 +273,7 @@ defmodule Jirasaur.ReportControllerTest do
 
     assert length_after_req == length_before_req + 1
     assert user_task != nil
-    assert json_response(conn, 200)
+    assert json_response(conn, 201)
   end
 
   test "request task with explicit start time" do
@@ -272,7 +285,7 @@ defmodule Jirasaur.ReportControllerTest do
   conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
   user_task = conn.assigns[:user_task]
   assert user_task != nil
-  assert json_response(conn, 200)
+  assert json_response(conn, 201)
 
   [hour, minute] = String.split time, ":"
   hourInteger = Integer.parse(hour)
@@ -296,7 +309,7 @@ defmodule Jirasaur.ReportControllerTest do
   conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
   user_task = conn.assigns[:user_task]
   assert user_task != nil
-  assert json_response(conn, 200)
+  assert json_response(conn, 201)
 
   [hour, minute] = String.split timeStart, ":"
   hourInteger = Integer.parse(hour)
