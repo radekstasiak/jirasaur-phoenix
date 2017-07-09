@@ -22,7 +22,7 @@ defmodule Jirasaur.Mixfile do
   def application do
     [mod: {Jirasaur, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :timex]]
+                    :phoenix_ecto, :postgrex, :timex,:ex_machina]]
   end
 
   # Specifies which paths to compile per environment.
@@ -45,7 +45,8 @@ defmodule Jirasaur.Mixfile do
      {:timex, "~> 3.0.4"},
      {:timex_ecto, "~>3.1.1"},
      {:excoveralls, "~> 0.6", only: :test},
-     {:poison, "~> 2.0"}]
+     {:poison, "~> 2.0"},
+     {:ex_machina, "~> 2.0"}]
 
 
   end

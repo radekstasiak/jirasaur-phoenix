@@ -25,7 +25,15 @@ defmodule Jirasaur.Api.V1.ReportController do
             user_task.finished != nil ->
             timeFinish = Time.to_string(DateTime.to_time(user_task.finished))
          end
-         response_text = "user: #{user.user_name}\ntask: #{task.name}\ntask type: #{task.task_type.name}\nstarted: #{timeStart}\nfinished: #{timeFinish}" 
+         response_text = "user: #{user.user_name}\n"
+                          <>
+                          "task: #{task.name}\n"
+                          <>
+                          "task type: #{task.task_type.name}\n"
+                          <>
+                          "started: #{timeStart}\n"
+                          <>
+                          "finished: #{timeFinish}" 
         
       end
       response = Poison.encode!(
