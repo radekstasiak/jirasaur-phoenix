@@ -17,9 +17,14 @@ defmodule Jirasaur.Api.V1.ReportController do
     if(conn.params["text"] == nil) do
       show_bad_req(conn)
     else
-      Jirasaur.ReportHelper.process_cmd(conn, params)
+      if(conn.params["text"] =~ "report" or conn.params["text"] == "" )do
+        Jirasaur.ReportHelper.process_report(conn, params)  
+      else
+        Jirasaur.ReportHelper.process_cmd(conn, params)
+      end
     end
   end
+
 
   defp setup_user(conn, _params) do
   	

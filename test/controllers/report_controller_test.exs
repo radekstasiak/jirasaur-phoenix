@@ -1,6 +1,8 @@
 defmodule Jirasaur.ReportControllerTest do
   use Jirasaur.ConnCase
   import Jirasaur.Fixtures
+  import Jirasaur.Factory
+
   alias Jirasaur.Task
   alias Jirasaur.TaskType
   alias Jirasaur.UserTask
@@ -263,7 +265,6 @@ defmodule Jirasaur.ReportControllerTest do
     
     user_tasks = Repo.all(UserTask)
     length_before_req = Kernel.length(user_tasks)
-
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     user_tasks = Repo.all(UserTask)
@@ -326,7 +327,31 @@ defmodule Jirasaur.ReportControllerTest do
   dateFinish = %DateTime{year: today.year, month: today.month, day: today.day, hour: elem(hourInteger,0), minute: elem(minuteInteger,0), second: 0, zone_abbr: "UTC", time_zone: "Europe/London", utc_offset: 0, std_offset: 0}
   assert user_task.finished == dateFinish
   end
-   
 
+  test "request default report" do
+    attrs = %{@params | text: ""}
+    user = insert(:user, user_id: String.downcase(@params.user_id))
+    populate_today(user)
+    conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+    # user_tasks = Repo.all(UserTask)
+    # length_after_req = Kernel.length(user_tasks)
+    # IO.puts "#{length_after_req} xxx #{user.user_id}"
+   end
+  
+  test "request report for particular task" do
+    attrs = %{@params | text: "report JIRA-241"}
+  end
+
+  test "request report for particular day" do
+    attrs = %{@params | text: "report 2017-06-21"}
+  end
+
+  test "request report for particular day and task" do
+    attrs = %{@params | text: "report JIRA-241 2017-06-21"}
+  end
+
+  test "request report for correct day with incorrect date" do
+    attrs = %{@params | text: "report JIRA-241 2017/06-21"}
+  end
 
 end

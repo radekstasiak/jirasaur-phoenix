@@ -1,6 +1,6 @@
 defmodule Jirasaur.ReportHelper do
 	import Jirasaur.ErrorsHelper
-	import Ecto.Query, only: [from: 2]
+	import Ecto.Query, only: [from: 2, from: 1]
 	use Timex
 	alias Jirasaur.Task
 	alias Jirasaur.TaskStatus
@@ -12,9 +12,112 @@ defmodule Jirasaur.ReportHelper do
 		conn
 	end
 
+	defp analyse_cmd(cmd) do
+		cmd = String.split(cmd)
+		{cmd, Kernel.length(cmd)}
+	end
+
+	def process_report(conn, _opts) do
+		{cmd,cmd_length} = analyse_cmd(conn.params["text"])
+
+		cond do
+			cmd_length == 0 ->
+				get_report(conn)
+			cmd_length == 2 ->
+				{status,datetime} = convertDateToDateTime(Enum.at(cmd,1))
+				if(status == :ok) do
+					get_report(
+						conn,
+						search_date: datetime
+						)	
+				else
+					get_report(
+						conn,
+						task_name: Enum.at(cmd,1)
+						)
+				end
+			cmd_length == 3 ->
+				{status,datetime} = convertDateToDateTime(Enum.at(cmd,2))
+				if(status == :ok) do
+					get_report(
+						conn,
+					task_name: Enum.at(cmd,1),
+					search_date: Enum.at(cmd,2),
+					)		
+				else
+					show_bad_req(conn)
+				end			
+			true ->
+				show_bad_req(conn)
+
+		end
+	end
+
+	defp get_report(conn, assoc \\ []) do
+
+		if (assoc[:task_name] != nil) do
+			task_id = String.downcase(assoc[:task_name].task_id)
+		end
+		
+		search_date = assoc[:search_date]
+		#if (conn.assigns[:user] != nil ) do
+			user_id = String.downcase(conn.assigns[:user].user_id)	
+		#end
+		
+		cond do
+			task_id != nil and search_date != nil ->
+				query = from ut in UserTask, 
+				join: u in assoc(ut, :user),
+				join: t in assoc(ut, :task),
+				where: ut.started >= ^Timex.beginning_of_day(search_date), 
+				where: ut.inserted_at <= ^Timex.end_of_day(search_date),
+				where: u.user_id == ^user_id,
+				where: t.task_id == ^task_id,
+				preload: [users: u],
+				preload: [tasks: t]
+			task_id != nil and search_date == nil ->
+				search_date == Timex.now
+				query = from ut in UserTask, 
+				join: u in assoc(ut, :user),
+				join: t in assoc(ut, :task),
+				where: ut.started >= ^Timex.beginning_of_day(search_date), 
+				where: ut.finished <= ^Timex.end_of_day(search_date),
+				where: u.user_id == ^user_id,
+				where: t.task_id == ^task_id,
+				preload: [users: u],
+				preload: [tasks: t]
+			task_id == nil and search_date != nil ->
+				query = from ut in UserTask, 
+				join: u in assoc(ut, :user),
+				join: t in assoc(ut, :task),
+				where: ut.started >= ^Timex.beginning_of_day(search_date), 
+				where: ut.finished <= ^Timex.end_of_day(search_date),
+				where: u.user_id == ^user_id,
+				preload: [users: u],
+				preload: [tasks: t]
+			task_id == nil and search_date == nil ->
+				IO.puts ("ellloo #{user_id}")
+				search_date = Timex.now
+				query = from ut in UserTask,
+				join: u in assoc(ut, :user),
+				join: t in assoc(ut, :task),
+				where: ut.started >= ^Timex.beginning_of_day(search_date), 
+				where: ut.finished <= ^Timex.end_of_day(search_date),
+				where: u.user_id == ^user_id,
+				preload: [user: u],
+				preload: [task: t]
+		end
+		
+		status = Repo.all(query)
+		user_task_test = Enum.at(status,1)
+		IO.puts("length #{Kernel.length(status)}")
+		IO.puts("status #{user_task_test.user.user_id} #{user_id}")
+		#send conn
+
+	end
+
 	def process_cmd(conn, _opts) do
-		cmd = String.split(conn.params["text"])
-		cmd_length = Kernel.length(cmd)
+		{cmd,cmd_length} = analyse_cmd(conn.params["text"])
 
 		cond do
 			cmd_length == 1 ->
@@ -89,9 +192,11 @@ defmodule Jirasaur.ReportHelper do
 		minuteInteger = Integer.parse(minute)
 		today = Timex.now
 		dateTime = %DateTime{year: today.year, month: today.month, day: today.day, hour: elem(hourInteger,0), minute: elem(minuteInteger,0), second: 0, zone_abbr: "UTC", time_zone: "Europe/London", utc_offset: 0, std_offset: 0}
-
 	end
 
+	defp convertDateToDateTime(date) do
+		{status,datetime} = Timex.parse(date, "%Y-%m-%d", :strftime)
+	end
 	defp update_current_task(conn,user_task, finished) do
 		params = %{task_id: user_task.task_id, 
 				   user_id: user_task.user_id,
@@ -199,6 +304,9 @@ defmodule Jirasaur.ReportHelper do
 		end
 
 	end
+
+
+
 
 
 
