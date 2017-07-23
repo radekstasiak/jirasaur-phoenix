@@ -19,7 +19,6 @@ defmodule Jirasaur.ReportHelper do
 
 	def process_report(conn, _opts) do
 		{cmd,cmd_length} = analyse_cmd(conn.params["text"])
-
 		cond do
 			cmd_length == 0 ->
 				get_report(conn)
@@ -42,7 +41,7 @@ defmodule Jirasaur.ReportHelper do
 					get_report(
 						conn,
 					task_name: Enum.at(cmd,1),
-					search_date: Enum.at(cmd,2),
+					search_date: datetime,
 					)		
 				else
 					show_bad_req(conn)
@@ -56,47 +55,45 @@ defmodule Jirasaur.ReportHelper do
 	defp get_report(conn, assoc \\ []) do
 
 		if (assoc[:task_name] != nil) do
-			task_id = String.downcase(assoc[:task_name].task_id)
+			task_name = String.downcase(assoc[:task_name])
 		end
 		
 		search_date = assoc[:search_date]
 		#if (conn.assigns[:user] != nil ) do
-			user_id = String.downcase(conn.assigns[:user].user_id)	
+		user_id = String.downcase(conn.assigns[:user].user_id)	
 		#end
 		
 		cond do
-			task_id != nil and search_date != nil ->
+			task_name != nil and search_date != nil ->
 				query = from ut in UserTask, 
 				join: u in assoc(ut, :user),
 				join: t in assoc(ut, :task),
 				where: ut.started >= ^Timex.beginning_of_day(search_date), 
-				where: ut.inserted_at <= ^Timex.end_of_day(search_date),
+				where: ut.finished <= ^Timex.end_of_day(search_date),
 				where: u.user_id == ^user_id,
-				where: t.task_id == ^task_id,
-				preload: [users: u],
-				preload: [tasks: t]
-			task_id != nil and search_date == nil ->
+				where: t.name == ^task_name,
+				preload: [user: u],
+				preload: [task: t]
+
+			task_name != nil and search_date == nil ->
 				search_date == Timex.now
 				query = from ut in UserTask, 
 				join: u in assoc(ut, :user),
 				join: t in assoc(ut, :task),
-				where: ut.started >= ^Timex.beginning_of_day(search_date), 
-				where: ut.finished <= ^Timex.end_of_day(search_date),
 				where: u.user_id == ^user_id,
-				where: t.task_id == ^task_id,
-				preload: [users: u],
-				preload: [tasks: t]
-			task_id == nil and search_date != nil ->
+				where: t.name == ^task_name,
+				preload: [user: u],
+				preload: [task: t]
+			task_name == nil and search_date != nil ->
 				query = from ut in UserTask, 
 				join: u in assoc(ut, :user),
 				join: t in assoc(ut, :task),
 				where: ut.started >= ^Timex.beginning_of_day(search_date), 
 				where: ut.finished <= ^Timex.end_of_day(search_date),
 				where: u.user_id == ^user_id,
-				preload: [users: u],
-				preload: [tasks: t]
-			task_id == nil and search_date == nil ->
-				IO.puts ("ellloo #{user_id}")
+				preload: [user: u],
+				preload: [task: t]
+			task_name == nil and search_date == nil ->
 				search_date = Timex.now
 				query = from ut in UserTask,
 				join: u in assoc(ut, :user),
@@ -108,11 +105,16 @@ defmodule Jirasaur.ReportHelper do
 				preload: [task: t]
 		end
 		
-		status = Repo.all(query)
-		user_task_test = Enum.at(status,1)
-		IO.puts("length #{Kernel.length(status)}")
-		IO.puts("status #{user_task_test.user.user_id} #{user_id}")
-		#send conn
+		result = Repo.all(query)
+		user_task_test = Enum.at(result,1)
+		leng_th = Kernel.length(result)
+
+		conn = Plug.Conn.assign(conn, :user_task_report, result)
+		conn
+    	|> Plug.Conn.put_status(200)
+    	|> Phoenix.Controller.render(Jirasaur.Api.V1.ReportView,"error.v1.json", code: 200)
+    	|> Plug.Conn.halt()
+
 
 	end
 

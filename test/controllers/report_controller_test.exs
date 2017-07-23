@@ -339,19 +339,56 @@ defmodule Jirasaur.ReportControllerTest do
    end
   
   test "request report for particular task" do
-    attrs = %{@params | text: "report JIRA-241"}
+    attrs = %{@params | text: "report GRENE-310"}
+    user = insert(:user, user_id: String.downcase(@params.user_id))
+    populate_task_across_a_sprint(user)
+    conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+    assert json_response(conn, 200)
+    result = conn.assigns[:user_task_report]
+    result_length = Kernel.length(result)
+    assert result_length == 3
   end
 
   test "request report for particular day" do
-    attrs = %{@params | text: "report 2017-06-21"}
+    attrs = %{@params | text: "report 2016-06-20"}
+    user = insert(:user, user_id: String.downcase(@params.user_id))
+    populate_task_across_a_sprint(user)
+    conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+    assert json_response(conn, 200)
+    result = conn.assigns[:user_task_report]
+    result_length = Kernel.length(result)
+    assert result_length == 8
+
+
   end
 
   test "request report for particular day and task" do
-    attrs = %{@params | text: "report JIRA-241 2017-06-21"}
+    attrs = %{@params | text: "report GRENE-363 2016-06-21"}
+    user = insert(:user, user_id: String.downcase(@params.user_id))
+    populate_task_across_a_sprint(user)
+    conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+    assert json_response(conn, 200)
+    result = conn.assigns[:user_task_report]
+    result_length = Kernel.length(result)
+    assert result_length == 2
   end
 
   test "request report for correct day with incorrect date" do
     attrs = %{@params | text: "report JIRA-241 2017/06-21"}
+    user = insert(:user, user_id: String.downcase(@params.user_id))
+    conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+    assert json_response(conn, 400) == %{
+      "code"=>"bad_request"
+    }
+  end
+
+  test "request report incorrect request" do
+    attrs = %{@params | text: "report JIRA-241 JIRA-111 2017-06-21"}
+    user = insert(:user, user_id: String.downcase(@params.user_id))
+    conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+    assert json_response(conn, 400) == %{
+      "code"=>"bad_request"
+    }
   end
 
 end
