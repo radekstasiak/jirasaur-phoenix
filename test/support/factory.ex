@@ -480,8 +480,8 @@ def populate_task_across_a_sprint(user) do
     # 09:37:00 09:45:00 0:07:00 0.08  grene-310 task
     # 09:45:00 09:56:00 0:11:00 0.12  coffee  private
     # 09:56:00 13:50:00 3:50:00 2.56  grene-363 task
-    # 13:50:00 14:30:00 0:40:00 0.44  lunch private
-    # 14:30:00 16:00:00 1:30:00 1.00  grene-363 task
+    # 13:50:00 14:50:00 0:40:00 0.44  lunch private
+    # 14:50:00 16:00:00 1:30:00 1.00  grene-363 task
 
     
     {status, taskStart} = Timex.parse(Date.to_string(day3)<>" 09:00","%Y-%m-%d %H:%M", :strftime)

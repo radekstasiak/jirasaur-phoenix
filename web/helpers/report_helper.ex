@@ -108,14 +108,50 @@ defmodule Jirasaur.ReportHelper do
 		result = Repo.all(query)
 		user_task_test = Enum.at(result,1)
 		leng_th = Kernel.length(result)
+		IO.puts"\n############"
+		map_tasks_with_name = Enum.reduce result, %{}, fn x, acc ->
+  			timeDiff = Timex.diff(x.finished,x.started, :minutes)
+  			duration  = Timex.Duration.from_minutes(timeDiff)
+  			{status,durationTime} = Timex.Duration.to_time(duration)
+  			IO.puts("=> #{x.task.name} duration #{durationTime}")
+  			task_current_duration = Map.get(acc,x.task.name)
+  			if (task_current_duration == nil) do
+  				Map.put(acc, x.task.name, duration)
+  			else
+  				updated_duration = Timex.Duration.add(task_current_duration,duration)
+  				Map.put(acc, x.task.name, updated_duration)
+  			end
+		end
 
+		map_tasks_with_task_types = Enum.reduce result, %{}, fn x, acc ->
+  			timeDiff = Timex.diff(x.finished,x.started, :minutes)
+  			duration  = Timex.Duration.from_minutes(timeDiff)
+  			{status,durationTime} = Timex.Duration.to_time(duration)
+  			task_type = TaskType.preload(x.task.task_type_id)
+  			task_current_duration = Map.get(acc,task_type.name)
+  			if (task_current_duration == nil) do
+  				Map.put(acc, task_type.name, duration)
+  			else
+  				updated_duration = Timex.Duration.add(task_current_duration,duration)
+  				Map.put(acc, task_type.name, updated_duration)
+  			end
+		end
+		IO.puts "\n# REPORT by tasks"
+		Enum.each(map_tasks_with_name, fn({k, x}) ->
+			{status,durationTime} = Timex.Duration.to_time(x)
+  			IO.puts("#{k} => #{durationTime}")
+		end)
+		IO.puts "\n# REPORT by tasks types"
+		Enum.each(map_tasks_with_task_types, fn({k, x}) ->
+			{status,durationTime} = Timex.Duration.to_time(x)
+  			IO.puts("#{k} => #{durationTime}")
+		end)
+		IO.puts"############"
 		conn = Plug.Conn.assign(conn, :user_task_report, result)
 		conn
     	|> Plug.Conn.put_status(200)
     	|> Phoenix.Controller.render(Jirasaur.Api.V1.ReportView,"error.v1.json", code: 200)
     	|> Plug.Conn.halt()
-
-
 	end
 
 	def process_cmd(conn, _opts) do
