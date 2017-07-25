@@ -333,9 +333,28 @@ defmodule Jirasaur.ReportControllerTest do
     user = insert(:user, user_id: String.downcase(@params.user_id))
     populate_today(user)
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
-    # user_tasks = Repo.all(UserTask)
-    # length_after_req = Kernel.length(user_tasks)
-    # IO.puts "#{length_after_req} xxx #{user.user_id}"
+
+    task_name_report = conn.assigns[:task_name_report]
+    type_name_report = conn.assigns[:type_name_report]
+    task_name_report_length = map_size(task_name_report)
+    type_name_report_length = map_size(type_name_report)
+    assert task_name_report_length == 5
+    assert type_name_report_length == 4
+    assert json_response(conn, 201) == %{
+      "attachments" => [%{
+        "text" => "EFASE-487 => 00:59:00\n"
+                <>"private => 00:31:00\n"
+                <>"standup => 00:10:00\n"
+                <>"support => 00:30:00\n"
+                <>"UZEEV-656 => 04:50:00\n\n"
+                <>"meeting => 00:10:00\n"
+                <>"private => 00:31:00\n"
+                <>"support => 00:30:00\n"
+                <>"task => 05:49:00\n"
+        }],
+        "response_type" => "in_channel",
+        "text" => "Report!"
+      }
    end
   
   test "request report for particular task" do
@@ -343,10 +362,20 @@ defmodule Jirasaur.ReportControllerTest do
     user = insert(:user, user_id: String.downcase(@params.user_id))
     populate_task_across_a_sprint(user)
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
-    assert json_response(conn, 200)
-    result = conn.assigns[:user_task_report]
-    result_length = Kernel.length(result)
-    assert result_length == 3
+    task_name_report = conn.assigns[:task_name_report]
+    type_name_report = conn.assigns[:type_name_report]
+    task_name_report_length = map_size(task_name_report)
+    type_name_report_length = map_size(type_name_report)
+    assert task_name_report_length == 1
+    assert type_name_report_length == 1
+    assert json_response(conn, 201) == %{
+      "attachments" => [%{
+        "text" =>"GRENE-310 => 02:05:00\n\n"                
+                <>"task => 02:05:00\n"
+        }],
+        "response_type" => "in_channel",
+        "text" => "Report!"
+    }
   end
 
   test "request report for particular day" do
@@ -354,10 +383,54 @@ defmodule Jirasaur.ReportControllerTest do
     user = insert(:user, user_id: String.downcase(@params.user_id))
     populate_task_across_a_sprint(user)
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
-    assert json_response(conn, 200)
-    result = conn.assigns[:user_task_report]
-    result_length = Kernel.length(result)
-    assert result_length == 8
+    
+    task_name_report = conn.assigns[:task_name_report]
+    type_name_report = conn.assigns[:type_name_report]
+    task_name_report_length = map_size(task_name_report)
+    type_name_report_length = map_size(type_name_report)
+    assert task_name_report_length == 6
+    assert type_name_report_length == 3
+    assert json_response(conn, 201) == %{
+      "attachments" => [%{
+        "text" => "EFASA-702 => 00:06:00\n"
+                <>"GRENE-310 => 00:58:00\n"
+                <>"GRENE-363 => 00:36:00\n"
+                <>"GRENE-963 => 01:30:00\n"
+                <>"private => 01:25:00\n"
+                <>"standup => 00:05:00\n\n"
+                <>"meeting => 00:05:00\n"
+                <>"private => 01:25:00\n"
+                <>"task => 03:10:00\n"
+        }],
+        "response_type" => "in_channel",
+        "text" => "Report!"
+      }
+
+
+    attrs = %{@params | text: "report 2016-06-19"}
+    conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+
+    task_name_report = conn.assigns[:task_name_report]
+    type_name_report = conn.assigns[:type_name_report]
+    task_name_report_length = map_size(task_name_report)
+    type_name_report_length = map_size(type_name_report)
+    assert task_name_report_length == 5
+    assert type_name_report_length == 4
+    assert json_response(conn, 201) == %{
+      "attachments" => [%{
+        "text" => "GRENE-310 => 00:59:00\n"
+                <>"GRENE-963 => 02:36:00\n"
+                <>"private => 00:15:00\n"
+                <>"standup => 03:03:00\n"
+                <>"support => 00:57:00\n\n"
+                <>"meeting => 03:03:00\n"
+                <>"private => 00:15:00\n"
+                <>"support => 00:57:00\n"
+                <>"task => 03:35:00\n"
+        }],
+        "response_type" => "in_channel",
+        "text" => "Report!"
+      }
 
 
   end
@@ -367,10 +440,21 @@ defmodule Jirasaur.ReportControllerTest do
     user = insert(:user, user_id: String.downcase(@params.user_id))
     populate_task_across_a_sprint(user)
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
-    assert json_response(conn, 200)
-    result = conn.assigns[:user_task_report]
-    result_length = Kernel.length(result)
-    assert result_length == 2
+    
+    task_name_report = conn.assigns[:task_name_report]
+    type_name_report = conn.assigns[:type_name_report]
+    task_name_report_length = map_size(task_name_report)
+    type_name_report_length = map_size(type_name_report)
+    assert task_name_report_length == 1
+    assert type_name_report_length == 1
+    assert json_response(conn, 201) == %{
+      "attachments" => [%{
+        "text" =>"GRENE-363 => 05:04:00\n\n"                
+                <>"task => 05:04:00\n"
+        }],
+        "response_type" => "in_channel",
+        "text" => "Report!"
+      }
   end
 
   test "request report for correct day with incorrect date" do

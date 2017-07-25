@@ -7,10 +7,10 @@ defmodule Jirasaur.Api.V1.ReportView do
 		}
 	end
 
-	def render("success.v1.json",%{response_text: response_text})do
+	def render("success.v1.json",%{response_text: response_text, header: header})do
         %{
             "response_type" => "in_channel",
-            "text" => "Saved!",
+            "text" => "#{header}!",
             "attachments" => [%{
             "text" => response_text
         			}]

@@ -59,9 +59,7 @@ defmodule Jirasaur.ReportHelper do
 		end
 		
 		search_date = assoc[:search_date]
-		#if (conn.assigns[:user] != nil ) do
 		user_id = String.downcase(conn.assigns[:user].user_id)	
-		#end
 		
 		cond do
 			task_name != nil and search_date != nil ->
@@ -108,50 +106,33 @@ defmodule Jirasaur.ReportHelper do
 		result = Repo.all(query)
 		user_task_test = Enum.at(result,1)
 		leng_th = Kernel.length(result)
-		IO.puts"\n############"
+
+		
 		map_tasks_with_name = Enum.reduce result, %{}, fn x, acc ->
-  			timeDiff = Timex.diff(x.finished,x.started, :minutes)
-  			duration  = Timex.Duration.from_minutes(timeDiff)
-  			{status,durationTime} = Timex.Duration.to_time(duration)
-  			IO.puts("=> #{x.task.name} duration #{durationTime}")
-  			task_current_duration = Map.get(acc,x.task.name)
-  			if (task_current_duration == nil) do
-  				Map.put(acc, x.task.name, duration)
-  			else
-  				updated_duration = Timex.Duration.add(task_current_duration,duration)
-  				Map.put(acc, x.task.name, updated_duration)
-  			end
+			calculate_report(x.task.name, x, acc)
 		end
 
 		map_tasks_with_task_types = Enum.reduce result, %{}, fn x, acc ->
-  			timeDiff = Timex.diff(x.finished,x.started, :minutes)
+  			task_type = TaskType.preload(x.task.task_type_id)
+  			calculate_report(task_type.name, x, acc)
+		end
+		conn
+		|> Plug.Conn.assign(:task_name_report, map_tasks_with_name)
+		|> Plug.Conn.assign(:type_name_report, map_tasks_with_task_types)
+		|> send
+	end
+
+	defp calculate_report(key_name, task, acc) do 
+		  	timeDiff = Timex.diff(task.finished,task.started, :minutes)
   			duration  = Timex.Duration.from_minutes(timeDiff)
   			{status,durationTime} = Timex.Duration.to_time(duration)
-  			task_type = TaskType.preload(x.task.task_type_id)
-  			task_current_duration = Map.get(acc,task_type.name)
+  			task_current_duration = Map.get(acc,key_name)
   			if (task_current_duration == nil) do
-  				Map.put(acc, task_type.name, duration)
+  				Map.put(acc, key_name, duration)
   			else
   				updated_duration = Timex.Duration.add(task_current_duration,duration)
-  				Map.put(acc, task_type.name, updated_duration)
+  				Map.put(acc, key_name, updated_duration)
   			end
-		end
-		IO.puts "\n# REPORT by tasks"
-		Enum.each(map_tasks_with_name, fn({k, x}) ->
-			{status,durationTime} = Timex.Duration.to_time(x)
-  			IO.puts("#{k} => #{durationTime}")
-		end)
-		IO.puts "\n# REPORT by tasks types"
-		Enum.each(map_tasks_with_task_types, fn({k, x}) ->
-			{status,durationTime} = Timex.Duration.to_time(x)
-  			IO.puts("#{k} => #{durationTime}")
-		end)
-		IO.puts"############"
-		conn = Plug.Conn.assign(conn, :user_task_report, result)
-		conn
-    	|> Plug.Conn.put_status(200)
-    	|> Phoenix.Controller.render(Jirasaur.Api.V1.ReportView,"error.v1.json", code: 200)
-    	|> Plug.Conn.halt()
 	end
 
 	def process_cmd(conn, _opts) do

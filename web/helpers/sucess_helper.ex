@@ -2,18 +2,48 @@ defmodule Jirasaur.SuccessHelper do
   
   def show_success(conn) do
     user = conn.assigns[:user]
-    task = conn.assigns[:task]
-    user_task = conn.assigns[:user_task]
-    get_response_details = get_response_details(user: user, task: task, user_task: user_task)
-    response_text = elem(get_response_details,0)
-    status_code = elem(get_response_details,1)
+
+    if(conn.params["text"] =~ "report" or conn.params["text"] == "" )do
+      task_name_report = conn.assigns[:task_name_report]
+      type_name_report = conn.assigns[:type_name_report]
+      get_response_details = generate_report_details(user, task_name_report, type_name_report)
+      response_text = elem(get_response_details,0)
+      status_code = elem(get_response_details,1)
+      header="Report"
+    else
+      task = conn.assigns[:task]
+      user_task = conn.assigns[:user_task]
+      get_response_details = get_task_saved_details(user: user, task: task, user_task: user_task)
+      response_text = elem(get_response_details,0)
+      status_code = elem(get_response_details,1)
+      header = "Saved!"
+    end
+
     conn
     |> Plug.Conn.put_status(status_code)
-    |> Phoenix.Controller.render(Jirasaur.Api.V1.ReportView,"success.v1.json", response_text: response_text)
+    |> Phoenix.Controller.render(Jirasaur.Api.V1.ReportView,"success.v1.json", response_text: response_text, header: header)
     |> Plug.Conn.halt()
   end
 
-  def get_response_details(assoc \\ []) do 
+  def generate_report_details(user, task_name_report, type_name_report)do  
+    response = Enum.reduce task_name_report, "", fn ({x, k}, acc) ->
+      {status,durationTime} = Timex.Duration.to_time(k)
+      if(x =~ "-") do
+        x = String.upcase(x)  
+      end
+      acc <> "#{x} => #{durationTime}\n"
+    end
+    response = response <> "\n"
+    response = Enum.reduce type_name_report, response, fn ({x, k}, acc) ->
+      {status,durationTime} = Timex.Duration.to_time(k)
+      acc <> "#{x} => #{durationTime}\n"
+    end
+    IO.puts("#{response}")
+    {response,201}
+  end
+
+
+  def get_task_saved_details(assoc \\ []) do 
       user = assoc[:user]
       task = assoc[:task]
       user_task = assoc[:user_task]
