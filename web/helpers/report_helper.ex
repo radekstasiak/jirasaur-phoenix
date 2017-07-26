@@ -283,7 +283,7 @@ defmodule Jirasaur.ReportHelper do
 		task_type_name = cond do
 			task_name == "private" ->
 			 "private" 
-			task_name == "lunch" ->
+			task_name == "lunch" or task_name == "breakfast" ->
 			 "private"
 			Regex.match?((~r/[A-Za-z0-9]*[-][0-9]*/),task_name) ->
 			  "task"
