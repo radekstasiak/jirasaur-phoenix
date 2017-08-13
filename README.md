@@ -1,4 +1,4 @@
-# Shtas [![Build Status](https://travis-ci.org/radekstasiak/shtask.svg?branch=develop)](https://travis-ci.org/radekstasiak/shtask) <a href="https://codecov.io/gh/radekstasiak/shtask"> <img src="https://codecov.io/gh/radekstasiak/shtask/branch/develop/graph/badge.svg" alt="Codecov" />
+# Shtask [![Build Status](https://travis-ci.org/radekstasiak/shtask.svg?branch=develop)](https://travis-ci.org/radekstasiak/shtask) <a href="https://codecov.io/gh/radekstasiak/shtask"> <img src="https://codecov.io/gh/radekstasiak/shtask/branch/develop/graph/badge.svg" alt="Codecov" />
 </a>
 
 It's a timetracking app intended to work along with Slack slash commands
