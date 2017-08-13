@@ -1,11 +1,15 @@
 language: elixir
 elixir:
-  - 1.4.2 
+- 1.4.2
 otp_release:
-  - 19.1
-
+- 19.1
 script:
-  - MIX_ENV=test mix do compile, coveralls.json
-
+- MIX_ENV=test mix do compile, coveralls.json
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)
+deploy:
+  provider: heroku
+  api_key:
+    secure: i4HGa1Cx61uZV3KZFK8FAD646f78CYSjgshCetIGqSHEm+iJzwXQTQYIs9P3fCrPamCm6q7hDc2Ba5h2LusP1NJLEJ1DNUZTGYIyX8T8WagbG7542LG0mXAaFWpnQu4vxl6F34EJp2MwIav0UZr1aCky8UMTFDC6R0QYbtu2GklyMBByWDAO1AmCYlf+MXMrev53uwbkTt5ZaPktZpsQHyB3NU1oohjqg+64QoDeE/Gv3o3htR48PmMuYsbKFum4yEA+Rl2BgI5uY3pdufJJBDrCt+RJMnoyFQNC4Y8jTUK8zdve5tCEtFbBXAmX+5wYx/dv8jCDyIsab/kmmAaM3nOK5WnIDHnaZG1UPIZkG5dJSTWnJm2FE1hb/J9g2jl54AibxY2WBz2Tpj0auHLKs7xzPmeNnTRjYVkAOJ/s2DnFO/gF+vm3tnlAwcAH3Lc3SWYIhjVBBLEcWZIIb2Pwnn8j1sIUqZu/7oIkkDSDGZDMOgWrJLR9BvHy7kT8M1zGLyvkTgnmzw1CC/dpBWnva9OnblQMXHequf5vcwaesCPWi/L+FswItHQey4ifP3V18cGDynUL6weHjNxVv4BRH1T8y4Kh6tklxcUyNtHivxtMXdTNWmrQKitHpf3Mb298nQqBkjH95vOVVA2jeCN581Jh97B8/GAGmhOBSthDLBM=
+  app: shtask
+  run: mix ecto.migrate
