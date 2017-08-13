@@ -1,4 +1,4 @@
-defmodule Jirasaur.ConnCase do
+defmodule Shtask.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -20,23 +20,23 @@ defmodule Jirasaur.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
 
-      alias Jirasaur.Repo
+      alias Shtask.Repo
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
 
-      import Jirasaur.Router.Helpers
+      import Shtask.Router.Helpers
 
       # The default endpoint for testing
-      @endpoint Jirasaur.Endpoint
+      @endpoint Shtask.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Jirasaur.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Shtask.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Jirasaur.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Shtask.Repo, {:shared, self()})
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}

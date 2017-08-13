@@ -1,0 +1,28 @@
+<h2>Show user</h2>
+
+<ul>
+
+  <li>
+    <strong>User:</strong>
+    <%= @user.user_id %>
+  </li>
+
+  <li>
+    <strong>User name:</strong>
+    <%= @user.user_name %>
+  </li>
+
+  <li>
+    <strong>Team:</strong>
+    <%= @user.team_id %>
+  </li>
+
+  <li>
+    <strong>Team domain:</strong>
+    <%= @user.team_domain %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: user_path(@conn, :edit, @user) %>
+<%= link "Back", to: user_path(@conn, :index) %>

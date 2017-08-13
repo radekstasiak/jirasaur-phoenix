@@ -1,4 +1,4 @@
-defmodule Jirasaur.ErrorHelpers do
+defmodule Shtask.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """
@@ -32,9 +32,9 @@ defmodule Jirasaur.ErrorHelpers do
     #     dgettext "errors", "is invalid"
     #
     if count = opts[:count] do
-      Gettext.dngettext(Jirasaur.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(Shtask.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(Jirasaur.Gettext, "errors", msg, opts)
+      Gettext.dgettext(Shtask.Gettext, "errors", msg, opts)
     end
   end
 end

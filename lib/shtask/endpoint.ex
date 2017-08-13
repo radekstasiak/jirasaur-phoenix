@@ -1,14 +1,14 @@
-defmodule Jirasaur.Endpoint do
-  use Phoenix.Endpoint, otp_app: :jirasaur
+defmodule Shtask.Endpoint do
+  use Phoenix.Endpoint, otp_app: :shtask
 
-  socket "/socket", Jirasaur.UserSocket
+  socket "/socket", Shtask.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/", from: :jirasaur, gzip: false,
+    at: "/", from: :shtask, gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
@@ -35,8 +35,8 @@ defmodule Jirasaur.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   plug Plug.Session,
     store: :cookie,
-    key: "_jirasaur_key",
+    key: "_shtask_key",
     signing_salt: "AVB9Vhr5"
 
-  plug Jirasaur.Router
+  plug Shtask.Router
 end

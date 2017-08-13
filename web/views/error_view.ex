@@ -1,5 +1,5 @@
-defmodule Jirasaur.ErrorView do
-  use Jirasaur.Web, :view
+defmodule Shtask.ErrorView do
+  use Shtask.Web, :view
 
   def render("404.html", _assigns) do
     "Page not found"

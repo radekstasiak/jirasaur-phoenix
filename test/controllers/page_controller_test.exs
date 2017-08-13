@@ -1,5 +1,5 @@
-defmodule Jirasaur.PageControllerTest do
-  use Jirasaur.ConnCase
+defmodule Shtask.PageControllerTest do
+  use Shtask.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"

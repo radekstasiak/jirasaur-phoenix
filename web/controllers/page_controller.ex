@@ -1,5 +1,5 @@
-defmodule Jirasaur.PageController do
-  use Jirasaur.Web, :controller
+defmodule Shtask.PageController do
+  use Shtask.Web, :controller
 
   def index(conn, _params) do
     render conn, "index.html"

@@ -1,25 +1,28 @@
-defmodule Jirasaur.Mixfile do
+defmodule Shtask.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :jirasaur,
+    [app: :shtask,
      version: "0.0.1",
-     elixir: "~> 1.2",
+     elixir: "~> 1.4.2",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
-     deps: deps()]
+     deps: deps(),
+     test_coverage: [tool: ExCoveralls],
+     preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test, "coveralls.json": :test],
+	]
   end
 
   # Configuration for the OTP application.
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {Jirasaur, []},
+    [mod: {Shtask, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex]]
+                    :phoenix_ecto, :postgrex, :timex,:ex_machina]]
   end
 
   # Specifies which paths to compile per environment.
@@ -37,8 +40,18 @@ defmodule Jirasaur.Mixfile do
      {:phoenix_html, "~> 2.6"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
-     {:cowboy, "~> 1.0"}]
+     {:cowboy, "~> 1.0"},
+     {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
+     {:timex, "~> 3.0.4"},
+     {:timex_ecto, "~>3.1.1"},
+     {:excoveralls, "~> 0.6", only: :test},
+     {:poison, "~> 2.0"},
+     {:ex_machina, "~> 2.0"}]
+
+
   end
+
+
 
   # Aliases are shortcuts or tasks specific to the current project.
   # For example, to create, migrate and run the seeds file at once:
