@@ -1,9 +1,9 @@
-defmodule Jirasaur.Factory do
+defmodule Shtask.Factory do
   # with Ecto
-  use ExMachina.Ecto, repo: Jirasaur.Repo
+  use ExMachina.Ecto, repo: Shtask.Repo
 
 def user_factory do
-	%Jirasaur.User{
+	%Shtask.User{
 		user_id: "XYZ1",
 		user_name: "Mike",
 		team_id: "123X",
@@ -12,7 +12,7 @@ def user_factory do
 end
 
 def task_factory do
-	%Jirasaur.Task{
+	%Shtask.Task{
 		name: "JIRA-123",
 		task_type: build(:task_type),
 		task_status: build(:task_status),
@@ -20,19 +20,19 @@ def task_factory do
 end
 
 def task_status_factory do
-	%Jirasaur.TaskStatus{
+	%Shtask.TaskStatus{
 		name: "in progress",
 	}
 
 end
 
 def task_type_factory do
-	%Jirasaur.TaskType{
+	%Shtask.TaskType{
 		name: "task",
 	}
 end
 def user_task_factory do
-	%Jirasaur.UserTask{
+	%Shtask.UserTask{
 		started: Timex.now,
 		finished: Timex.now,
 		user: build(:user),

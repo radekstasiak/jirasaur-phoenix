@@ -1,9 +1,9 @@
-defmodule Jirasaur.ReportHelperTest do
-	use Jirasaur.ModelCase
+defmodule Shtask.ReportHelperTest do
+	use Shtask.ModelCase
 	use Timex
-	import Jirasaur.Fixtures
-	alias Jirasaur.ReportHelper
-	alias Jirasaur.UserTask
+	import Shtask.Fixtures
+	alias Shtask.ReportHelper
+	alias Shtask.UserTask
 
 	test "current task is nil" do 
 	 user = fixture(:user)

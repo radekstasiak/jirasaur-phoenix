@@ -1,7 +1,7 @@
-defmodule Jirasaur.TaskTest do
-  use Jirasaur.ModelCase
-  import Jirasaur.Fixtures
-  alias Jirasaur.Task
+defmodule Shtask.TaskTest do
+  use Shtask.ModelCase
+  import Shtask.Fixtures
+  alias Shtask.Task
 
   @valid_attrs %{name: "JIRA-XXZ", task_type_id: 1, task_status_id: 1}
   #@tasktype %{name:"task"}
@@ -30,7 +30,7 @@ defmodule Jirasaur.TaskTest do
     attrs = %{attrs | task_status_id: task.task_status_id}
     attrs = %{attrs | name: task.name}
     changeset = Task.changeset(%Task{}, attrs)
-    assert {:error, _inserted_user} = Jirasaur.Repo.insert(changeset)
+    assert {:error, _inserted_user} = Shtask.Repo.insert(changeset)
     
   end
 
@@ -48,7 +48,7 @@ defmodule Jirasaur.TaskTest do
 
   test "task should have no users" do
     task = fixture(:task)
-    #task = Task |> Jirasaur.Repo.get(task.id) |> Jirasaur.Repo.preload([:users])
+    #task = Task |> Shtask.Repo.get(task.id) |> Shtask.Repo.preload([:users])
     task = Task.preload(task.id)
     length = Kernel.length(task.users)
     assert  length == 0
@@ -56,14 +56,14 @@ defmodule Jirasaur.TaskTest do
 
   test "task should have a user" do
     user_task = fixture(:user_task)
-    task = Jirasaur.Task.preload(user_task.task_id)
+    task = Shtask.Task.preload(user_task.task_id)
     length = Kernel.length(task.users)
     assert  length == 1
   end
 
   test "task should have a UserTask" do
     user_task = fixture(:user_task)
-    task = Jirasaur.Task.preload(user_task.task_id)
+    task = Shtask.Task.preload(user_task.task_id)
     length = Kernel.length(task.user_tasks)
     assert  length == 1
   end

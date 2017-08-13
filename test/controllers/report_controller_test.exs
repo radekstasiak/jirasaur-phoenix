@@ -1,11 +1,11 @@
-defmodule Jirasaur.ReportControllerTest do
-  use Jirasaur.ConnCase
-  import Jirasaur.Fixtures
-  import Jirasaur.Factory
+defmodule Shtask.ReportControllerTest do
+  use Shtask.ConnCase
+  import Shtask.Fixtures
+  import Shtask.Factory
 
-  alias Jirasaur.Task
-  alias Jirasaur.TaskType
-  alias Jirasaur.UserTask
+  alias Shtask.Task
+  alias Shtask.TaskType
+  alias Shtask.UserTask
 
   System.put_env("SLACK_TOKEN", "aaa")
   @params %{token: "aaa",team_domain: "XY1", team_id: "radev", user_id: "RS1", user_name: "Radek",
@@ -250,7 +250,7 @@ defmodule Jirasaur.ReportControllerTest do
     
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
-    user_task = Jirasaur.UserTask.preload(user_task.id)
+    user_task = Shtask.UserTask.preload(user_task.id)
     new_user_task = conn.assigns[:user_task]
     assert json_response(conn, 201)
     assert user_task.finished != ""

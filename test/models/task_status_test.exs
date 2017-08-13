@@ -1,7 +1,7 @@
-defmodule Jirasaur.TaskStatusTest do
-  use Jirasaur.ModelCase
-  import Jirasaur.Fixtures
-  alias Jirasaur.TaskStatus
+defmodule Shtask.TaskStatusTest do
+  use Shtask.ModelCase
+  import Shtask.Fixtures
+  alias Shtask.TaskStatus
 
   @valid_attrs %{name: "In progress"}
   @invalid_attrs %{}
@@ -18,7 +18,7 @@ defmodule Jirasaur.TaskStatusTest do
 
   test "task status can be added to the db" do
     changeset = TaskStatus.changeset(%TaskStatus{}, @valid_attrs)
-    assert {:ok, _inserted_task_status} = Jirasaur.Repo.insert(changeset)
+    assert {:ok, _inserted_task_status} = Shtask.Repo.insert(changeset)
   end
 
   test "task status name should be present" do
@@ -39,7 +39,7 @@ defmodule Jirasaur.TaskStatusTest do
     task_status = fixture(:task_status)
     attrs = %{@valid_attrs | name: String.upcase(task_status.name)}
     changeset = TaskStatus.changeset(%TaskStatus{}, attrs)
-    assert {:error, _inserted_task_status} = Jirasaur.Repo.insert(changeset)
+    assert {:error, _inserted_task_status} = Shtask.Repo.insert(changeset)
   end
 
     test "task type preload function" do

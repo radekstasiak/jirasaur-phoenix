@@ -1,18 +1,18 @@
-defmodule Jirasaur.User do
-  use Jirasaur.Web, :model
+defmodule Shtask.User do
+  use Shtask.Web, :model
 
   schema "users" do
     field :user_id, :string
     field :user_name, :string
     field :team_id, :string
     field :team_domain, :string
-    has_many :user_tasks, Jirasaur.UserTask
-    many_to_many :tasks, Jirasaur.Task, join_through: Jirasaur.UserTask
+    has_many :user_tasks, Shtask.UserTask
+    many_to_many :tasks, Shtask.Task, join_through: Shtask.UserTask
     timestamps()
   end
 
   def preload(id) do
-    user = Jirasaur.User |> Jirasaur.Repo.get(id)|> Jirasaur.Repo.preload([:tasks]) |> Jirasaur.Repo.preload([:user_tasks])
+    user = Shtask.User |> Shtask.Repo.get(id)|> Shtask.Repo.preload([:tasks]) |> Shtask.Repo.preload([:user_tasks])
   end
 
   @doc """

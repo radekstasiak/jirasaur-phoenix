@@ -1,3 +1,3 @@
-defmodule Jirasaur.LayoutViewTest do
-  use Jirasaur.ConnCase, async: true
+defmodule Shtask.LayoutViewTest do
+  use Shtask.ConnCase, async: true
 end

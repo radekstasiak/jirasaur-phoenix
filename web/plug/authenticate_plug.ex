@@ -1,7 +1,7 @@
-defmodule Jirasaur.Plug.Authenticate do
+defmodule Shtask.Plug.Authenticate do
   @behaviour Plug
   import Plug.Conn
-  import Jirasaur.ErrorsHelper
+  import Shtask.ErrorsHelper
   import Phoenix.Controller, only: [render: 4]
 
   def init(opts), do: opts

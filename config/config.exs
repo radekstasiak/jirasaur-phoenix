@@ -6,15 +6,15 @@
 use Mix.Config
 
 # General application configuration
-config :jirasaur,
-  ecto_repos: [Jirasaur.Repo]
+config :shtask,
+  ecto_repos: [Shtask.Repo]
 
 # Configures the endpoint
-config :jirasaur, Jirasaur.Endpoint,
+config :shtask, Shtask.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "U6FhKPHbw4KVNUmG3O+A2tu0jGka6l5bjaAp3tmO/EI24x0GGvICAE771O5nNLLb",
-  render_errors: [view: Jirasaur.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Jirasaur.PubSub,
+  render_errors: [view: Shtask.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: Shtask.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger

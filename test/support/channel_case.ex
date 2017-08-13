@@ -1,4 +1,4 @@
-defmodule Jirasaur.ChannelCase do
+defmodule Shtask.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -20,22 +20,22 @@ defmodule Jirasaur.ChannelCase do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
 
-      alias Jirasaur.Repo
+      alias Shtask.Repo
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
 
 
       # The default endpoint for testing
-      @endpoint Jirasaur.Endpoint
+      @endpoint Shtask.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Jirasaur.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Shtask.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Jirasaur.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Shtask.Repo, {:shared, self()})
     end
 
     :ok

@@ -1,4 +1,4 @@
-# Jirasaur [![Build Status](https://travis-ci.org/radekstasiak/jirasaur-phoenix.svg?branch=develop)](https://travis-ci.org/radekstasiak/jirasaur-phoenix) <a href="https://codecov.io/gh/radekstasiak/jirasaur-phoenix"> <img src="https://codecov.io/gh/radekstasiak/jirasaur-phoenix/branch/develop/graph/badge.svg" alt="Codecov" />
+# Shtask [![Build Status](https://travis-ci.org/radekstasiak/shtask-phoenix.svg?branch=develop)](https://travis-ci.org/radekstasiak/shtask-phoenix) <a href="https://codecov.io/gh/radekstasiak/shtask-phoenix"> <img src="https://codecov.io/gh/radekstasiak/shtask-phoenix/branch/develop/graph/badge.svg" alt="Codecov" />
 </a>
 
 It's a timetracking app intended to work along with Slack slash commands
@@ -36,4 +36,4 @@ See wiki for a full example
 ## License
 The app is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
-# jirasaur-phoenix
+# shtask-phoenix

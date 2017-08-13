@@ -1,14 +1,14 @@
-defmodule Jirasaur.TaskType do
-  use Jirasaur.Web, :model
+defmodule Shtask.TaskType do
+  use Shtask.Web, :model
 
   schema "tasktypes" do
     field :name, :string
-    has_many :tasks, Jirasaur.Task
+    has_many :tasks, Shtask.Task
     timestamps()
   end
 
   def preload(id) do
-    user = Jirasaur.TaskType |> Jirasaur.Repo.get(id)|> Jirasaur.Repo.preload([:tasks])
+    user = Shtask.TaskType |> Shtask.Repo.get(id)|> Shtask.Repo.preload([:tasks])
   end
   @doc """
   Builds a changeset based on the `struct` and `params`.

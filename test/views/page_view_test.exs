@@ -1,3 +1,3 @@
-defmodule Jirasaur.PageViewTest do
-  use Jirasaur.ConnCase, async: true
+defmodule Shtask.PageViewTest do
+  use Shtask.ConnCase, async: true
 end

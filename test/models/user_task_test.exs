@@ -1,7 +1,7 @@
-defmodule Jirasaur.UserTaskTest do
-  use Jirasaur.ModelCase
-  import Jirasaur.Fixtures
-  alias Jirasaur.UserTask
+defmodule Shtask.UserTaskTest do
+  use Shtask.ModelCase
+  import Shtask.Fixtures
+  alias Shtask.UserTask
 
   @valid_attrs %{finished: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}, started: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}, task_id: 1 ,  user_id: 1}
   @invalid_attrs %{}

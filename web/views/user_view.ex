@@ -1,3 +1,3 @@
-defmodule Jirasaur.UserView do
-  use Jirasaur.Web, :view
+defmodule Shtask.UserView do
+  use Shtask.Web, :view
 end

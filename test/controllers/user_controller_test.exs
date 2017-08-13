@@ -1,7 +1,7 @@
-# defmodule Jirasaur.UserControllerTest do
-#   use Jirasaur.ConnCase
+# defmodule Shtask.UserControllerTest do
+#   use Shtask.ConnCase
 
-#   alias Jirasaur.User
+#   alias Shtask.User
 #   @valid_attrs %{team_domain: "some content", team_id: "some content", user_id: "some content", user_name: "some content"}
 #   @invalid_attrs %{}
 

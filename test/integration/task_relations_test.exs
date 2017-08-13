@@ -1,7 +1,7 @@
-# defmodule Jirasaur.TaskRelationsTest do
-#   use Jirasaur.ModelCase
-#   import Jirasaur.Fixtures
-#   alias Jirasaur.Task
+# defmodule Shtask.TaskRelationsTest do
+#   use Shtask.ModelCase
+#   import Shtask.Fixtures
+#   alias Shtask.Task
 
 # 	@valid_attrs %{name: "JIRA-XXZ", task_type_id: 1, task_status_id: 1}
 

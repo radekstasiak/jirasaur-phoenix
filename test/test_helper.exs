@@ -2,4 +2,4 @@
 
 ExUnit.start
 
-Ecto.Adapters.SQL.Sandbox.mode(Jirasaur.Repo, :manual)
+Ecto.Adapters.SQL.Sandbox.mode(Shtask.Repo, :manual)

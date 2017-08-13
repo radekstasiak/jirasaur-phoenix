@@ -1,7 +1,7 @@
-# defmodule Jirasaur.UserController do
-#   use Jirasaur.Web, :controller
+# defmodule Shtask.UserController do
+#   use Shtask.Web, :controller
 
-#   alias Jirasaur.User
+#   alias Shtask.User
 
 #   def index(conn, _params) do
 #     users = Repo.all(User)
@@ -20,7 +20,7 @@
 #       {:ok, _user} ->
 #        conn
 #        |> put_status(:unauthorized)
-#        |> render(Jirasaur.ErrorView, "error.json", code: :unauthorized)
+#        |> render(Shtask.ErrorView, "error.json", code: :unauthorized)
 #        |> halt()
 #       {:error, changeset} ->
 #         render(conn, "new.html", changeset: changeset)

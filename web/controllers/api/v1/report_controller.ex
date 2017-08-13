@@ -1,10 +1,10 @@
-defmodule Jirasaur.Api.V1.ReportController do
+defmodule Shtask.Api.V1.ReportController do
 	require Logger
-  use Jirasaur.Web, :controller
-  import Jirasaur.ErrorsHelper
-  import Jirasaur.SuccessHelper
-  alias Jirasaur.User
-  alias Jirasaur.Task
+  use Shtask.Web, :controller
+  import Shtask.ErrorsHelper
+  import Shtask.SuccessHelper
+  alias Shtask.User
+  alias Shtask.Task
   plug :setup_user
   plug :setup_task
   
@@ -18,9 +18,9 @@ defmodule Jirasaur.Api.V1.ReportController do
       show_bad_req(conn)
     else
       if(conn.params["text"] =~ "report" or conn.params["text"] == "" )do
-        Jirasaur.ReportHelper.process_report(conn, params)  
+        Shtask.ReportHelper.process_report(conn, params)  
       else
-        Jirasaur.ReportHelper.process_cmd(conn, params)
+        Shtask.ReportHelper.process_cmd(conn, params)
       end
     end
   end
@@ -30,10 +30,10 @@ defmodule Jirasaur.Api.V1.ReportController do
   	
     if(conn.params["user_id"] != nil) do
       user_id = String.downcase(conn.params["user_id"])
-    	user = Jirasaur.Repo.get_by(Jirasaur.User, user_id: user_id)
+    	user = Shtask.Repo.get_by(Shtask.User, user_id: user_id)
     	if (user == nil) do
     	 changeset = User.changeset(%User{}, conn.params)
-    	 case Jirasaur.Repo.insert(changeset) do
+    	 case Shtask.Repo.insert(changeset) do
         {:ok, inserted_user} ->
           user = inserted_user
           assign(conn, :user, user) 

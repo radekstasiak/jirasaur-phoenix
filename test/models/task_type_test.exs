@@ -1,7 +1,7 @@
-defmodule Jirasaur.TaskTypeTest do
-  use Jirasaur.ModelCase
-  import Jirasaur.Fixtures
-  alias Jirasaur.TaskType
+defmodule Shtask.TaskTypeTest do
+  use Shtask.ModelCase
+  import Shtask.Fixtures
+  alias Shtask.TaskType
 
   @valid_attrs %{name: "support"}
   @invalid_attrs %{}
@@ -18,7 +18,7 @@ defmodule Jirasaur.TaskTypeTest do
 
   test "task type can be added to the db" do
     changeset = TaskType.changeset(%TaskType{}, @valid_attrs)
-    assert {:ok, _inserted_task_type} = Jirasaur.Repo.insert(changeset)
+    assert {:ok, _inserted_task_type} = Shtask.Repo.insert(changeset)
   end
 
   test "task type name should be present" do
@@ -39,7 +39,7 @@ defmodule Jirasaur.TaskTypeTest do
     task_type = fixture(:task_type)
     attrs = %{@valid_attrs | name: String.upcase(task_type.name)}
     changeset = TaskType.changeset(%TaskType{}, attrs)
-    assert {:error, _inserted_task_type} = Jirasaur.Repo.insert(changeset)
+    assert {:error, _inserted_task_type} = Shtask.Repo.insert(changeset)
   end
 
   test "task type preload function" do

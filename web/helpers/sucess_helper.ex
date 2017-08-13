@@ -1,4 +1,4 @@
-defmodule Jirasaur.SuccessHelper do
+defmodule Shtask.SuccessHelper do
   
   def show_success(conn) do
     user = conn.assigns[:user]
@@ -21,7 +21,7 @@ defmodule Jirasaur.SuccessHelper do
 
     conn
     |> Plug.Conn.put_status(status_code)
-    |> Phoenix.Controller.render(Jirasaur.Api.V1.ReportView,"success.v1.json", response_text: response_text, header: header)
+    |> Phoenix.Controller.render(Shtask.Api.V1.ReportView,"success.v1.json", response_text: response_text, header: header)
     |> Plug.Conn.halt()
   end
 

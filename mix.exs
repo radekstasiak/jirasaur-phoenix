@@ -1,8 +1,8 @@
-defmodule Jirasaur.Mixfile do
+defmodule Shtask.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :jirasaur,
+    [app: :shtask,
      version: "0.0.1",
      elixir: "~> 1.4.2",
      elixirc_paths: elixirc_paths(Mix.env),
@@ -20,7 +20,7 @@ defmodule Jirasaur.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {Jirasaur, []},
+    [mod: {Shtask, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :timex,:ex_machina]]
   end

@@ -1,5 +1,5 @@
-defmodule Jirasaur.Router do
-  use Jirasaur.Web, :router
+defmodule Shtask.Router do
+  use Shtask.Web, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -14,21 +14,21 @@ defmodule Jirasaur.Router do
   end
 
   pipeline :authenticated do
-    plug Jirasaur.Plug.Authenticate
+    plug Shtask.Plug.Authenticate
   end
 
-  scope "/", Jirasaur do
+  scope "/", Shtask do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
   end
 
-  scope "/", Jirasaur do
+  scope "/", Shtask do
     pipe_through [:browser,:authenticated]
     resources "/users", UserController
   end
 
-  scope "/api", Jirasaur.Api, as: :api do
+  scope "/api", Shtask.Api, as: :api do
     pipe_through [:api,:authenticated]
     scope "/v1", V1, as: :v1 do
       post "/report", ReportController, :process_request
@@ -38,7 +38,7 @@ defmodule Jirasaur.Router do
 
 
   # Other scopes may use custom stacks.
-  # scope "/api", Jirasaur do
+  # scope "/api", Shtask do
   #   pipe_through :api
   # end
 end

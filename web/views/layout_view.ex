@@ -1,3 +1,3 @@
-defmodule Jirasaur.LayoutView do
-  use Jirasaur.Web, :view
+defmodule Shtask.LayoutView do
+  use Shtask.Web, :view
 end

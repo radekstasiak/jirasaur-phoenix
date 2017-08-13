@@ -1,5 +1,5 @@
-defmodule Jirasaur.Api.V1.ReportView do
-	use Jirasaur.Web, :view
+defmodule Shtask.Api.V1.ReportView do
+	use Shtask.Web, :view
 
 	def render("error.v1.json",%{code: code})do 
 		%{

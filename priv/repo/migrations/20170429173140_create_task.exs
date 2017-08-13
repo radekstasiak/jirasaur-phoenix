@@ -1,4 +1,4 @@
-defmodule Jirasaur.Repo.Migrations.CreateTask do
+defmodule Shtask.Repo.Migrations.CreateTask do
   use Ecto.Migration
 
   def change do

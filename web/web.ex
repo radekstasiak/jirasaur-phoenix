@@ -1,12 +1,12 @@
-defmodule Jirasaur.Web do
+defmodule Shtask.Web do
   @moduledoc """
   A module that keeps using definitions for controllers,
   views and so on.
 
   This can be used in your application as:
 
-      use Jirasaur.Web, :controller
-      use Jirasaur.Web, :view
+      use Shtask.Web, :controller
+      use Shtask.Web, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -30,12 +30,12 @@ defmodule Jirasaur.Web do
     quote do
       use Phoenix.Controller
 
-      alias Jirasaur.Repo
+      alias Shtask.Repo
       import Ecto
       import Ecto.Query
 
-      import Jirasaur.Router.Helpers
-      import Jirasaur.Gettext
+      import Shtask.Router.Helpers
+      import Shtask.Gettext
     end
   end
 
@@ -49,9 +49,9 @@ defmodule Jirasaur.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import Jirasaur.Router.Helpers
-      import Jirasaur.ErrorHelpers
-      import Jirasaur.Gettext
+      import Shtask.Router.Helpers
+      import Shtask.ErrorHelpers
+      import Shtask.Gettext
     end
   end
 
@@ -65,10 +65,10 @@ defmodule Jirasaur.Web do
     quote do
       use Phoenix.Channel
 
-      alias Jirasaur.Repo
+      alias Shtask.Repo
       import Ecto
       import Ecto.Query
-      import Jirasaur.Gettext
+      import Shtask.Gettext
     end
   end
 

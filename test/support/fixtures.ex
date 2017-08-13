@@ -1,9 +1,9 @@
-defmodule Jirasaur.Fixtures do
-  alias Jirasaur.User
-  alias Jirasaur.Task
-  alias Jirasaur.TaskStatus
-  alias Jirasaur.TaskType
-  alias Jirasaur.UserTask
+defmodule Shtask.Fixtures do
+  alias Shtask.User
+  alias Shtask.Task
+  alias Shtask.TaskStatus
+  alias Shtask.TaskType
+  alias Shtask.UserTask
 
   def fixture(type, assoc \\ [])
 
@@ -14,7 +14,7 @@ defmodule Jirasaur.Fixtures do
     user_name = assoc[:user_name] || "Radek"
     attrs =  %{team_domain: team_domain, team_id: team_id, user_id: user_id, user_name: user_name}
     changeset = User.changeset(%User{}, attrs)
-    case Jirasaur.Repo.insert(changeset) do
+    case Shtask.Repo.insert(changeset) do
       {:ok, inserted_user} ->
           user = inserted_user
        end
@@ -25,7 +25,7 @@ defmodule Jirasaur.Fixtures do
     task_name = assoc[:task_name] || "JIRA-XXX"
     attrs =  %{name: task_name,task_status_id: task_status.id, task_type_id: task_type.id}
     changeset = Task.changeset(%Task{}, attrs)
-    case Jirasaur.Repo.insert(changeset) do
+    case Shtask.Repo.insert(changeset) do
       {:ok, inserted_task} ->
           task = inserted_task
     end
@@ -38,7 +38,7 @@ defmodule Jirasaur.Fixtures do
     user_task_finished = assoc[:finished] || ""
     attrs =  %{started: user_task_started,finished: user_task_finished,task_id: task.id, user_id: user.id}
     changeset = UserTask.changeset(%UserTask{}, attrs)
-    case Jirasaur.Repo.insert(changeset) do
+    case Shtask.Repo.insert(changeset) do
       {:ok, inserted_user_task} ->
           user_task = inserted_user_task
     end
@@ -48,7 +48,7 @@ defmodule Jirasaur.Fixtures do
     name = assoc[:task_type_name] || "task"
     attrs =  %{name: name}
     changeset = TaskType.changeset(%TaskType{}, attrs)
-    case Jirasaur.Repo.insert(changeset) do
+    case Shtask.Repo.insert(changeset) do
       {:ok, inserted_task_type} ->
           task_type = inserted_task_type
        end
@@ -58,7 +58,7 @@ defmodule Jirasaur.Fixtures do
     name = assoc[:task_status_name] || "done"
     attrs =  %{name: name}
     changeset = TaskStatus.changeset(%TaskStatus{}, attrs)
-    case Jirasaur.Repo.insert(changeset) do
+    case Shtask.Repo.insert(changeset) do
       {:ok, inserted_task_status} ->
           task_type = inserted_task_status
     end

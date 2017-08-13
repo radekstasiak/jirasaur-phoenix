@@ -1,12 +1,12 @@
-defmodule Jirasaur.ReportHelper do
-	import Jirasaur.ErrorsHelper
+defmodule Shtask.ReportHelper do
+	import Shtask.ErrorsHelper
 	import Ecto.Query, only: [from: 2, from: 1]
 	use Timex
-	alias Jirasaur.Task
-	alias Jirasaur.TaskStatus
-	alias Jirasaur.TaskType
-	alias Jirasaur.UserTask
-	alias Jirasaur.Repo
+	alias Shtask.Task
+	alias Shtask.TaskStatus
+	alias Shtask.TaskType
+	alias Shtask.UserTask
+	alias Shtask.Repo
 	
 	def send(conn) do
 		conn
@@ -238,7 +238,7 @@ defmodule Jirasaur.ReportHelper do
 					started: started,
 					finished: finished,
 					})
-		case Jirasaur.Repo.insert(changeset) do
+		case Shtask.Repo.insert(changeset) do
 			{:ok, inserted_task} ->
 				inserted_task
 			{:error, _inserted_task_type} ->
@@ -258,20 +258,20 @@ defmodule Jirasaur.ReportHelper do
 	end
 
 	defp get_task(conn,task_name) do
-		Jirasaur.Repo.get_by(Task, name: task_name) ||
+		Shtask.Repo.get_by(Task, name: task_name) ||
 				insert_task(conn,task_name)
 	end
 
 	defp insert_task(conn, task_name) do
 		task_type_name = get_task_type(task_name)
-		task_type = Jirasaur.Repo.get_by(TaskType, name: task_type_name) || 
+		task_type = Shtask.Repo.get_by(TaskType, name: task_type_name) || 
 					insert_new_task_type(conn,task_type_name)
 		task_status = get_task_status(conn)
 		changeset = Task.changeset(%Task{},%{name: task_name,
 					task_type_id: task_type.id,
 					task_status_id: task_status.id
 					})
-		case Jirasaur.Repo.insert(changeset) do
+		case Shtask.Repo.insert(changeset) do
 			{:ok, inserted_task} ->
 				inserted_task
 			{:error, _inserted_task_type} ->
@@ -298,7 +298,7 @@ defmodule Jirasaur.ReportHelper do
 
 	defp insert_new_task_type(conn,task_type_name) do
 		changeset = TaskType.changeset(%TaskType{},%{name: task_type_name})
-		case Jirasaur.Repo.insert(changeset) do
+		case Shtask.Repo.insert(changeset) do
 			{:ok, inserted_task_type} ->
 				inserted_task_type
 			{:error, _inserted_task_type} ->
@@ -309,13 +309,13 @@ defmodule Jirasaur.ReportHelper do
 
 	defp get_task_status(conn) do 
 		task_status_name = "in progress"
-		Jirasaur.Repo.get_by(TaskStatus, name: task_status_name) || 
+		Shtask.Repo.get_by(TaskStatus, name: task_status_name) || 
 					insert_new_task_status(conn,task_status_name)
 	end
 
 	defp insert_new_task_status(conn,task_status_name) do
 		changeset = TaskStatus.changeset(%TaskStatus{},%{name: task_status_name})
-		case Jirasaur.Repo.insert(changeset) do
+		case Shtask.Repo.insert(changeset) do
 			{:ok, inserted_task_status} ->
 				inserted_task_status
 			{:error, _inserted_task_type} ->
