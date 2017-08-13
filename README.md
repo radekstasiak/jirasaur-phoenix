@@ -5,11 +5,7 @@ It's a timetracking app intended to work along with Slack slash commands
 
 * Report start time and end time of each task including meetings & breaks
 * Report it down throughout the day
-* App automatically calculates data for scrum’s reports real effort
-* Individual can effectively track how much time spent on work-related tasks (jira tasks, support tasks i.e. helping others, * meetings) and how much time was spent on private things (i.e. lunch, other activities)
-* Offers 3rd person perspective on your efforts -  with raw data you know how “effective” is your everyday approach, no room to bs yourself
-* With that knowledge and some self-discipline one can boost it’s individual performance and improve team results in meeting sprint’s goals
-
+* App automatically calculates time spent on work-related tasks (jira tasks, support tasks i.e. helping others, * meetings) and how much time was spent on private things (i.e. lunch, other activities)
 
 To start your Phoenix app:
 
