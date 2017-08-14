@@ -74,7 +74,7 @@ defmodule Shtask.ReportHelper do
 				preload: [task: t]
 
 			task_name != nil and search_date == nil ->
-				search_date == Timex.now
+				search_date == Timex.now("Europe/London")
 				query = from ut in UserTask, 
 				join: u in assoc(ut, :user),
 				join: t in assoc(ut, :task),
@@ -92,7 +92,7 @@ defmodule Shtask.ReportHelper do
 				preload: [user: u],
 				preload: [task: t]
 			task_name == nil and search_date == nil ->
-				search_date = Timex.now
+				search_date = Timex.now("Europe/London")
 				query = from ut in UserTask,
 				join: u in assoc(ut, :user),
 				join: t in assoc(ut, :task),
@@ -171,8 +171,8 @@ defmodule Shtask.ReportHelper do
 		end
 
 		if(task_started == nil) do
-		  task_started = Timex.now
-		  current_task_finished = Timex.now
+		  task_started = Timex.now("Europe/London")
+		  current_task_finished = Timex.now("Europe/London")
 		end
 		if(assoc[:finished] != nil) do
 		   task_finished = convertTimeToDateTime(assoc[:finished])
@@ -209,7 +209,7 @@ defmodule Shtask.ReportHelper do
 		[hour, minute] = String.split time, ":"
 		hourInteger = Integer.parse(hour)
 		minuteInteger = Integer.parse(minute)
-		today = Timex.now
+		today = Timex.now("Europe/London")
 		dateTime = %DateTime{year: today.year, month: today.month, day: today.day, hour: elem(hourInteger,0), minute: elem(minuteInteger,0), second: 0, zone_abbr: "UTC", time_zone: "Europe/London", utc_offset: 0, std_offset: 0}
 	end
 
@@ -248,7 +248,7 @@ defmodule Shtask.ReportHelper do
 
 
 	def get_current_user_task(user_id) do
-		date = Timex.now
+		date = Timex.now("Europe/London")
 		query = Ecto.Query.from(t in UserTask,
 		 where: t.started >= ^Timex.beginning_of_day(date),
 		 where: t.user_id == ^user_id,
