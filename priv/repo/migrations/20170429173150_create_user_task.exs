@@ -7,7 +7,7 @@ defmodule Shtask.Repo.Migrations.CreateUserTask do
       add :finished, :utc_datetime, null: false
       add :user_id, references(:users), null: false
       add :task_id, references(:tasks), null: false
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
   end
