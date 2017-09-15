@@ -475,4 +475,21 @@ defmodule Shtask.ReportControllerTest do
     }
   end
 
+  test "mixed request with both explicit and automatic timestamp" do
+    #user = insert(:user, user_id: String.downcase(@params.user_id))
+    
+    #attrs = %{@params | text: "private 9:30"}
+    #conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+    
+    #attrs = %{@params | text: "support"}
+    #conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+
+    #attrs = %{@params | text: ""}
+    #conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+    #IO.puts("XXXX #{Timex.now}")
+    #assert json_response(conn, 400) == %{
+    #  "code"=>"bad_request"
+    #}
+
+  end
 end
