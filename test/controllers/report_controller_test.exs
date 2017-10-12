@@ -9,7 +9,7 @@ defmodule Shtask.ReportControllerTest do
 
   System.put_env("SLACK_TOKEN", "aaa")
   @params %{token: "aaa",team_domain: "XY1", team_id: "radev", user_id: "RS1", user_name: "Radek",
-            text: "morning"}
+            text: "morning 09:00"}
 
   test "ok response", %{conn: conn} do
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), @params
@@ -21,7 +21,7 @@ defmodule Shtask.ReportControllerTest do
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     assert json_response(conn, 201) 
 
-    attrs = %{attrs | text: "JIRA-123"}
+    attrs = %{attrs | text: "JIRA-123 14:00"}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     assert json_response(conn, 201) 
   end
@@ -33,6 +33,14 @@ defmodule Shtask.ReportControllerTest do
     assert json_response(conn, 400) == %{
       "code"=>"bad_request"
     }
+  end
+
+  test "report task without start time results in bad request error",  %{conn: conn}do
+    task_name="JI2-123"
+    text = "#{task_name}" 
+    attrs = %{@params | text: text}
+    conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+    assert json_response(conn, 400)
   end
 
   test "unauthorized response", %{conn: conn} do
@@ -53,7 +61,8 @@ defmodule Shtask.ReportControllerTest do
 
   end
   test "request creates new task", %{conn: conn} do
-    text = "JI2-123" 
+    task_name="JI2-123"
+    text = "#{task_name} 15:00" 
     attrs = %{@params | text: text}
     tasks = Repo.all(Task)
     length_before_req = Kernel.length(tasks)
@@ -65,12 +74,12 @@ defmodule Shtask.ReportControllerTest do
     task = conn.assigns[:task]
     assert length_after_req == length_before_req + 1
     assert task != nil
-    assert task.name == String.downcase(text)
+    assert task.name == String.downcase(task_name)
     assert json_response(conn, 201)
   end
 
   test "support task is correctly recognized",  %{conn: conn} do
-    text = "inbox/slack" 
+    text = "inbox/slack 15:00" 
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     task = conn.assigns[:task]
@@ -79,7 +88,7 @@ defmodule Shtask.ReportControllerTest do
   end
 
   test "jira task is correctly recognized",  %{conn: conn} do
-    text = "JIRA24-124" 
+    text = "JIRA24-124 14:00" 
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     task = conn.assigns[:task]
@@ -88,7 +97,7 @@ defmodule Shtask.ReportControllerTest do
   end
 
   test "private task is correctly recognized",  %{conn: conn} do
-    text = "private" 
+    text = "private 15:00" 
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     task = conn.assigns[:task]
@@ -97,7 +106,7 @@ defmodule Shtask.ReportControllerTest do
   end
 
   test "meeting task is correctly recognized",  %{conn: conn} do
-    text = "meeting" 
+    text = "meeting 13:00" 
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     task = conn.assigns[:task]
@@ -107,7 +116,7 @@ defmodule Shtask.ReportControllerTest do
 
   test "existing task is utilized when needed", %{conn: conn} do
     task =fixture(:task)
-    text = task.name
+    text = "#{task.name} 15:00"
     attrs = %{@params | text: text}
     tasks = Repo.all(Task)
     length_before_req = Kernel.length(tasks)
@@ -120,8 +129,9 @@ defmodule Shtask.ReportControllerTest do
   end
 
   test "existing task type is utilized when needed", %{conn: conn} do
-    text = "support" 
-    task_type_support = fixture(:task_type, task_type_name: text)
+    task_name="support"
+    text = "#{task_name} #{Timex.now.hour}:#{Timex.now.minute}" 
+    task_type_support = fixture(:task_type, task_type_name: task_name)
     attrs = %{@params | text: text}
 
     task_types=Repo.all(TaskType)
@@ -137,7 +147,7 @@ defmodule Shtask.ReportControllerTest do
   end
 
   test "incorrect task name", %{conn: conn} do
-    text = "JIRA2412a4" 
+    text = "JIRA2412a4 15:00" 
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     assert json_response(conn, 201)
@@ -157,7 +167,8 @@ defmodule Shtask.ReportControllerTest do
 
 
   test "request morning as first request today" do
-    text = "morning"
+    task_name="morning"
+    text = "#{task_name} 09:00"
     attrs = %{@params | text: text}
 
     user_tasks = Repo.all(UserTask)
@@ -176,7 +187,7 @@ defmodule Shtask.ReportControllerTest do
     task = conn.assigns[:task]
     assert task.id == user_task.task_id
     user_task = UserTask.preload(user_task.id)
-    assert user_task.task.name == text
+    assert user_task.task.name == task_name
   end
 
   test "request morning as not first request today" do
@@ -187,7 +198,7 @@ defmodule Shtask.ReportControllerTest do
                    user_id: "RS1",
                    user_name: "Radek")
     user_task = fixture(:user_task, user: user)
-    text = "morning"
+    text = "morning 09:00"
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     user_task = conn.assigns[:user_task]
@@ -198,7 +209,7 @@ defmodule Shtask.ReportControllerTest do
   end
 
   test "request off as first request today" do
-    text = "off"
+    text = "off 16:00"
     attrs = %{@params | text: text}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
     user_task = conn.assigns[:user_task]
@@ -218,7 +229,7 @@ defmodule Shtask.ReportControllerTest do
                    user_name: "Radek")
     user_task = fixture(:user_task, user: user)
 
-    text = "off"
+    text = "off 16:00"
     
     user_tasks = Repo.all(UserTask)
     length_before_req = Kernel.length(user_tasks)
@@ -237,7 +248,7 @@ defmodule Shtask.ReportControllerTest do
 
   test "request updates previous task" do
     task = fixture(:task)
-    text = "JIRA-512"
+    text = "JIRA-512 #{Timex.now.hour}:#{Timex.now.minute}"
 
     user = fixture(:user, 
                    token: "aaa",
@@ -255,13 +266,13 @@ defmodule Shtask.ReportControllerTest do
     assert json_response(conn, 201)
     assert user_task.finished != ""
 
-    assert Timex.format!(user_task.finished,"%FT%T%:z", :strftime) == Timex.format!(user_task.started,"%FT%T%:z", :strftime)
+    assert Timex.format!(user_task.finished,"%H%m%:z", :strftime) == Timex.format!(user_task.started,"%H%m%:z", :strftime)
     assert user_task.finished != nil
   end
 
   test "request creates new user task" do
     task = fixture(:task)
-    text = task.name
+    text = "#{task.name} 14:00"
     
     user_tasks = Repo.all(UserTask)
     length_before_req = Kernel.length(user_tasks)
