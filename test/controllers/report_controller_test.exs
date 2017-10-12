@@ -35,6 +35,14 @@ defmodule Shtask.ReportControllerTest do
     }
   end
 
+  test "report task without start time results in bad request error",  %{conn: conn}do
+    task_name="JI2-123"
+    text = "#{task_name}" 
+    attrs = %{@params | text: text}
+    conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
+    assert json_response(conn, 400)
+  end
+
   test "unauthorized response", %{conn: conn} do
     attrs = %{@params | token: "bbb"}
     conn = post build_conn(), api_v1_report_path(build_conn(), :process_request), attrs
