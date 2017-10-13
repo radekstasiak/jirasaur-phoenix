@@ -139,11 +139,6 @@ defmodule Shtask.ReportHelper do
 		{cmd,cmd_length} = analyse_cmd(conn.params["text"])
 
 		cond do
-			cmd_length == 1 ->
-		 	 process_task(
-		 	 	conn,
-		 	 	task_name: Enum.at(cmd, 0)
-		 	 	)
 			cmd_length == 2 ->
 			 process_task(
 			 	conn,
@@ -170,10 +165,6 @@ defmodule Shtask.ReportHelper do
 		   current_task_finished = convertTimeToDateTime(assoc[:started])
 		end
 
-		if(task_started == nil) do
-		  task_started = Timex.now("Europe/London")
-		  current_task_finished = Timex.now("Europe/London")
-		end
 		if(assoc[:finished] != nil) do
 		   task_finished = convertTimeToDateTime(assoc[:finished])
 		end
